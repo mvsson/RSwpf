@@ -46,10 +46,11 @@ namespace RateShopperWPF
             string[] urls = hotelUrlSettings.getUrlsList(parsingDates);
             Progress.Maximum = urls.Length;
 
-            //PriceParser.GetPricesList(urls, ref Progress, showDetailed.IsChecked.Value, hotelUrlSettings, parsingDates, ref outputBoard);
+            await PriceParser.GetPricesListAsync(urls, Progress, showDetailed.IsChecked.Value, 
+                hotelUrlSettings, parsingDates, outputBoard);
             
             // Получаем вывод
-            var pricesList = new List<List<List<string>>>();
+            /*var pricesList = new List<List<List<string>>>();
             DateTime dateCount = parsingDates.Start;
             if (!showDetailed.IsChecked.Value)
                 outputBoard.Text += "Минимальные цены в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
@@ -77,7 +78,7 @@ namespace RateShopperWPF
                 }
                 dateCount = dateCount.AddDays(parsingDates.Step);
                 Progress.Value = i + 1;
-            }
+            }*/
 
             // включаем UI
             Progress.Value = 0;

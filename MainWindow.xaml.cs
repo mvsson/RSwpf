@@ -32,18 +32,22 @@ namespace RateShopperWPF
             // Создаём список адресов для парсинга
             UrlSettings hotelUrlSettings = new UrlSettings(hotelLink);
             DateSettings parsingDates = new DateSettings(startParse, endParse);
-            string[] urls = hotelUrlSettings.getUrlsList(parsingDates);
-            Progress.Maximum = urls.Length;
-            try
+            string[] urls = hotelUrlSettings.GetUrlsList(parsingDates);
+
+            try // выгружаем нужную инфу
             {
-                await PriceParser.ShowQuickOutputPricesAsync(urls, Progress, showDetailed.IsChecked.Value,
-                hotelUrlSettings, parsingDates, outputBoard);
+                var pricesList = await PriceParser.GetPricesListAsync(Progress, urls, startParse);
+
+                if (showDetailed.IsChecked.Value)
+                    PriceParser.ShowOnBoardPricesDetailed(hotelUrlSettings, outputBoard, pricesList);
+                else
+                    PriceParser.ShowOnBoardPrices(hotelUrlSettings, outputBoard, pricesList);
             }
             catch (Exception ex)
             {
                 outputBoard.Text += ex.Message;
             }
-            
+
             // включаем UI
             Progress.Value = 0;
             Starter.IsEnabled = true;

@@ -6,131 +6,97 @@ using System.Windows;
 using System.Windows.Controls;
 using AngleSharp;
 using AngleSharp.Dom;
-
+using RateShopperWPF.core;
 
 namespace RateShopperWPF
 {
     class PriceParser
     {
-        public static async Task ShowQuickOutputPricesAsync(string[] urls, ProgressBar progressBar, bool showDetailed,
-            UrlSettings hotelUrlSettings, DateSettings parsingDates, TextBox output)
+        public static void ShowOnBoardPrices(UrlSettings hotelUrlSettings, TextBox output, PriceByDay[] dayList)
         {
-            var pricesList = new List<List<List<string>>>(urls.Length);
-
-            if (!showDetailed)
-                output.Text += "Минимальные цены в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
-            DateTime dateCount = parsingDates.Start;
-
-            await Task.WhenAll(urls.AsParallel().AsOrdered().Select(async url =>
+            output.Text += "Минимальные цены в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
+            
+            foreach (var day in dayList)
             {
-                var _ = await GetDayPricesAsync(url);
-
                 try
                 {
-                    if (showDetailed)
-                    {
-                        Application.Current.Dispatcher.Invoke(() => 
-                            output.Text += "\n\tЦена на дату: " + dateCount.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n");
-                        for (int ii = 0; ii < _.Count; ii++) // перебираем все цены на дату
-                            if (_[ii].Count > 1) // если больше 1 значения, значит в блоке под индексом 0 - название, 1 - цена
-                                Application.Current.Dispatcher.Invoke(() =>
-                                    output.Text += _[ii][1] + "\t" + _[ii][0] + "\n");
-                    }
-                    else
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            output.Text += dateCount.ToString("yyyy-MM-dd") + "\t";
-                            output.Text += _[0][1] + "\t" + _[0][0] + "\n";
-                        });
-                    }
+                    output.Text += day.Date.ToString("yyyy-MM-dd") + "\t";
+                    output.Text += day.Rates[0].Price + "\t" + day.Rates[0].Category + "\n";// под индексом 0 самый дешевый тариф
                 }
                 catch
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                        output.Text += "Возникла ошибка, проверьте наличие цен на выбранные даты\n");
+                    output.Text += "Возникла ошибка, проверьте доступные тарифы на даты\n";
                 }
-                dateCount = dateCount.AddDays(parsingDates.Step);
-
-                Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
-            }));
+            }
         }
-
-
-
-        public static async Task ShowOutputPricesAsync(string[] urls, ProgressBar progressBar, bool showDetailed, 
-            UrlSettings hotelUrlSettings, DateSettings parsingDates, TextBox output)
+        public static void ShowOnBoardPricesDetailed(UrlSettings hotelUrlSettings, TextBox output, PriceByDay[] dayList)
         {
-            var pricesList = await GetPricesListAsync(urls, progressBar);
-
-            if (!showDetailed)
-                output.Text += "Минимальные цены в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
-            DateTime dateCount = parsingDates.Start;
-            for (int i = 0; i < urls.Length; i++)  // перебираем даты
+            foreach (var day in dayList)
             {
                 try
                 {
-                    if (showDetailed)
-                    {
-                        output.Text += "\n\tЦена на дату: " + dateCount.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
-                        for (int ii = 0; ii < pricesList[i].Count; ii++) // перебираем все цены на дату
-                            if (pricesList[i][ii].Count > 1) // если больше 1 значения, значит в блоке под индексом 0 - название, 1 - цена
-                                output.Text += pricesList[i][ii][1] + "\t" + pricesList[i][ii][0] + "\n";
-                    }
-                    else
-                    {
-                        output.Text += dateCount.ToString("yyyy-MM-dd") + "\t";
-                        output.Text += pricesList[i][0][1] + "\t" + pricesList[i][0][0] + "\n";
-                    }
+                    output.Text += "\n\tЦена на дату: " + day.Date.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
+                    foreach (var rate in day.Rates)
+                        if (rate.Category != null) // если null, значит категория под предыдущим индексом
+                            output.Text += rate.Price + "\t" + rate.Category + "\n";
                 }
                 catch
                 {
-                    output.Text += "Возникла ошибка, проверьте наличие цен на выбранные даты\n";
+                    output.Text += "Возникла ошибка, проверьте доступные тарифы на даты\n";
                 }
-                dateCount = dateCount.AddDays(parsingDates.Step);
             }
         }
 
-        public static async Task<List<List<List<string>>>> GetPricesListAsync(string[] urls, ProgressBar progressBar)
+        public static async Task<PriceByDay[]> GetPricesListAsync(ProgressBar progressBar, string[] urls, DateTime start)
         {
-            var pricesList = new List<List<List<string>>>(urls.Length);
+            Application.Current.Dispatcher.Invoke(() => progressBar.Maximum = urls.Length);
+            var pricesList = new PriceByDay[urls.Length];
 
-            await Task.WhenAll(urls.AsParallel().AsOrdered().Select(async url =>
-            {
-                pricesList.Add(await GetDayPricesAsync(url));
-                Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
-            }));
+            await Task.WhenAll(
+                urls.AsParallel().Select(async (url, index) =>
+                {
+                    var domDocument = await GetDomPageAsync(url);
+                    pricesList[index] = GetPricesByDay(domDocument, start.AddDays(index));
+                    Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
+                }));
+            
             return pricesList;
         }
 
-        public static async Task<List<List<string>>> GetDayPricesAsync(string url)
-        {
-            var config = Configuration.Default.WithDefaultLoader(); // конфиг для AngleSharp
-            var document = await BrowsingContext.New(config).OpenAsync(url); // DOM исходник веб страницы
-            
+        private static PriceByDay GetPricesByDay(IDocument document, DateTime date)  ///////////////////////////////////////////////////////////
+        {            
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
-            List<List<string>> result = new List<List<string>>();
+            PriceByDay result = new PriceByDay { Date = date };
+
             foreach (var item in blocks)
             {
-                List<string> _ = new List<string>();
+                var priceLine = new PriceLine ();
                 // парсим названия категорий
                 var category = GetParse(in item, "span", "hprt-roomtype-icon-link ");
                 foreach (var item_ in category)
                 { 
-                    _.Add(item_.TextContent.Trim()); 
+                    priceLine.Category = item_.TextContent.Trim(); 
                 }
                 // парсим цены
                 var price = GetParse(in item, "div", "bui-price-display__value prco-inline-block-maker-helper prco-font16-helper ");
                 foreach (var item_ in price)
                 { 
-                    _.Add(item_.TextContent.Trim()); 
+                    priceLine.Price = item_.TextContent.Trim(); 
                 }
-                result.Add(_);
+                result.Rates.Add(priceLine);
             }
             return result;
         }
 
-        private static IEnumerable<IElement> GetParse<T>(in T source, string htmlteg, string htmlclass) where T: IParentNode
+        private static async Task<IDocument> GetDomPageAsync(string url)
+        {
+            var config = Configuration.Default.WithDefaultLoader();
+            var context = BrowsingContext.New(config);
+            var document = await context.OpenAsync(url);
+            return document;
+        }
+
+        private static IEnumerable<IElement> GetParse<T>(in T source, string htmlteg, string htmlclass) where T : IParentNode
         {
             IEnumerable<IElement> blocks = source.QuerySelectorAll(htmlteg).Where(item => item.ClassName != null && item.ClassName.Contains(htmlclass));
             return blocks;

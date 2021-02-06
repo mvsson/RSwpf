@@ -12,14 +12,14 @@ namespace RateShopperWPF
             HotelLink = hotelLink;
         }
 
-        public string getHotelPage()
+        public string GetHotelPage()
         {
             string _url = $"https://www.booking.com/hotel/ru/{HotelLink}.html";
             return _url;
         }
-        public string[] getUrlsList(in DateSettings range)
+        public string[] GetUrlsList(in DateSettings range)
         {
-            string _url = this.getHotelPage();
+            string _url = this.GetHotelPage();
             List<string> result = new List<string>();
             DateTime checkin = range.Start;
             DateTime checkout = checkin.AddDays(1);

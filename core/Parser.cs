@@ -12,37 +12,41 @@ namespace RateShopperWPF
 {
     class Parser
     {
-        public static void ShowOnBoardPrices(TextBox output, PriceByDay[] dayList)
+        public static string PricesToString(PriceByDay[] dayList)
         {
+            string result = string.Empty;
             foreach (var day in dayList)
             {
                 try
                 {
-                    output.Text += day.Date.ToString("yyyy-MM-dd") + "\t";
-                    output.Text += day.Rates[0].Price + "\t" + day.Rates[0].Category + "\n";// под индексом 0 самый дешевый тариф
+                    result += day.Date.ToString("yyyy-MM-dd") + "\t" + 
+                            day.Rates[0].Price + "\t" + day.Rates[0].Category + "\n";// под индексом 0 самый дешевый тариф
                 }
                 catch
                 {
-                    output.Text += "Возникла ошибка, проверьте доступные тарифы на даты\n";
+                    result += "Возникла ошибка, проверьте доступные тарифы на даты\n";
                 }
             }
+            return result;
         }
-        public static void ShowOnBoardPricesDetailed(UrlSettings hotelUrlSettings, TextBox output, PriceByDay[] dayList)
+        public static string PricesToStringDetailed(UrlSettings hotelUrlSettings, PriceByDay[] dayList)
         {
+            string result = string.Empty;
             foreach (var day in dayList)
             {
                 try
                 {
-                    output.Text += "\nДоступные тарифы на дату: " + day.Date.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
+                    result += "\nДоступные тарифы на дату: " + day.Date.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
                     foreach (var rate in day.Rates)
                         if (rate.Category != null) // если null, значит категория под предыдущим индексом
-                            output.Text += rate.Price + "\t" + rate.Category + "\n";
+                            result += rate.Price + "\t" + rate.Category + "\n";
                 }
                 catch
                 {
-                    output.Text += "Возникла ошибка, проверьте доступные тарифы на даты\n";
+                    result += "Возникла ошибка, проверьте доступные тарифы на даты\n";
                 }
             }
+            return result;
         }
 
         public static async Task<PriceByDay[]> GetPricesListAsync(ProgressBar progressBar, UrlOnDate[] urls)

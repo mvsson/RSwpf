@@ -13,7 +13,6 @@ namespace RateShopperWPF.core
             Rates = new List<PriceLine>();
         }
     }
-
     class PriceLine
     {
         public string Category { set; get; }

@@ -13,17 +13,21 @@
             <ColumnDefinition Width="71*"/>
             <ColumnDefinition Width="174*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="hotelLinkInput" Width="153" Background="AliceBlue" BorderThickness="2"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,94,0,293" Grid.ColumnSpan="2" Height="32" Text="ra-nevskiy-44.ru" FontSize="16" MaxLines="1"/>
-        <Button x:Name="Starter" Content="Показать" Click="Starter_Click" Margin="48,151,0,0" Grid.ColumnSpan="2" FontSize="20" FontWeight="Bold" Width="153" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" />
-        <DatePicker x:Name="startDate" Background="AliceBlue" Margin="48,26,0,364" Grid.ColumnSpan="2" FontSize="16" Height="29" HorizontalAlignment="Left" Width="153" VerticalAlignment="Top" />
-        <DatePicker x:Name="endDate" Background="AliceBlue" Margin="48,60,346,330" Grid.ColumnSpan="2" FontSize="16" Width="153" Height="29" HorizontalAlignment="Left" VerticalAlignment="Top" />
-        <TextBox x:Name="outputBoard" TextWrapping="Wrap" Margin="109,23,23,40" 
-                 Grid.Column="1" Grid.ColumnSpan="3" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="hotelLinkInput" Text="ra-nevskiy-44.ru"
+                 Width="153" Background="AliceBlue" BorderThickness="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,94,0,293" Grid.ColumnSpan="2" Height="32" FontSize="16" MaxLines="1"/>
+        <Button x:Name="StarterButton" Content="Показать" Click="Starter_Click" 
+                Margin="48,151,0,0" Grid.ColumnSpan="2" FontSize="20" FontWeight="Bold" Width="153" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <DatePicker x:Name="startDate" SelectedDateChanged="StartDateChanged" 
+                    Background="AliceBlue" Margin="48,26,0,364" Grid.ColumnSpan="2" FontSize="16" Height="29" HorizontalAlignment="Left" Width="153" VerticalAlignment="Top" />
+        <DatePicker x:Name="endDate" 
+                    Background="AliceBlue" Margin="48,60,346,330" Grid.ColumnSpan="2" FontSize="16" Width="153" Height="29" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <TextBox x:Name="outputBoard" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 TextWrapping="Wrap" Margin="109,23,23,40" Grid.Column="1" Grid.ColumnSpan="3"/>
         <Label Content="С:" HorizontalAlignment="Left" Margin="10,27,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379"/>
         <Label Content="По:" HorizontalAlignment="Left" Margin="10,61,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold"/>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Center" Height="15" Margin="10,0,23,10" VerticalAlignment="Bottom" Grid.ColumnSpan="4" ValueChanged="ProgressBar_ValueChanged" Width="759"/>
-        <CheckBox x:Name="showDetailed" Content="Показать подробно" HorizontalAlignment="Left" Margin="48,131,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="153" Height="15"/>
+        <CheckBox x:Name="showDetailed" Content="Показать подробно" 
+                  HorizontalAlignment="Left" Margin="48,131,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="153" Height="15"/>
     </Grid>
 </Window>

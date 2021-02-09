@@ -10,12 +10,10 @@ using RateShopperWPF.core;
 
 namespace RateShopperWPF
 {
-    class PriceParser
+    class Parser
     {
-        public static void ShowOnBoardPrices(UrlSettings hotelUrlSettings, TextBox output, PriceByDay[] dayList)
+        public static void ShowOnBoardPrices(TextBox output, PriceByDay[] dayList)
         {
-            output.Text += "Минимальные цены в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
-            
             foreach (var day in dayList)
             {
                 try
@@ -35,7 +33,7 @@ namespace RateShopperWPF
             {
                 try
                 {
-                    output.Text += "\n\tЦена на дату: " + day.Date.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
+                    output.Text += "\nДоступные тарифы на дату: " + day.Date.ToString("yyyy-MM-dd") + $" В отеле [{hotelUrlSettings.HotelLink}]" + "\n";
                     foreach (var rate in day.Rates)
                         if (rate.Category != null) // если null, значит категория под предыдущим индексом
                             output.Text += rate.Price + "\t" + rate.Category + "\n";
@@ -47,23 +45,31 @@ namespace RateShopperWPF
             }
         }
 
-        public static async Task<PriceByDay[]> GetPricesListAsync(ProgressBar progressBar, string[] urls, DateTime start)
+        public static async Task<PriceByDay[]> GetPricesListAsync(ProgressBar progressBar, UrlOnDate[] urls)
         {
-            Application.Current.Dispatcher.Invoke(() => progressBar.Maximum = urls.Length);
             var pricesList = new PriceByDay[urls.Length];
 
             await Task.WhenAll(
                 urls.AsParallel().Select(async (url, index) =>
                 {
-                    var domDocument = await GetDomPageAsync(url);
-                    pricesList[index] = GetPricesByDay(domDocument, start.AddDays(index));
+                    var domDocument = await GetDomPageAsync(url.Link);
+                    pricesList[index] = GetPricesByDay(domDocument, url.Date);
                     Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
-                }));
-            
+                }));        
             return pricesList;
         }
 
-        private static PriceByDay GetPricesByDay(IDocument document, DateTime date)  ///////////////////////////////////////////////////////////
+        public static UrlOnDate[][] SplitUrlsListByN(UrlOnDate[] urls, int lenght)
+        {
+            int i = 0;
+            var items = from s in urls
+                        let num = i++
+                        group s by num / lenght into g
+                        select g.ToArray();
+            return items.ToArray();
+        }
+
+        private static PriceByDay GetPricesByDay(IDocument document, DateTime date)
         {            
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
             PriceByDay result = new PriceByDay { Date = date };

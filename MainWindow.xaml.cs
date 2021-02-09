@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-
+using System.Windows.Controls;
 
 namespace RateShopperWPF
 {
@@ -12,16 +12,13 @@ namespace RateShopperWPF
         public MainWindow()
         {
             InitializeComponent();
-
-            startDate.SelectedDate = DateTime.Today;
-            endDate.SelectedDate = DateTime.Today.AddDays(1);
-            
+            SetDatepickersSettings();
         }
 
         private async void Starter_Click(object sender, RoutedEventArgs e)
         {
             // Выключаем UI
-            Starter.IsEnabled = false;
+            StarterButton.IsEnabled = false;
             showDetailed.IsEnabled = false;
 
             // Достаём информацию из форм
@@ -32,31 +29,65 @@ namespace RateShopperWPF
             // Создаём список адресов для парсинга
             UrlSettings hotelUrlSettings = new UrlSettings(hotelLink);
             DateSettings parsingDates = new DateSettings(startParse, endParse);
-            string[] urls = hotelUrlSettings.GetUrlsList(parsingDates);
+            UrlOnDate[] urls = hotelUrlSettings.GetUrlsList(parsingDates);
+            Progress.Maximum = urls.Length;
 
-            try // выгружаем нужную инфу
+            // Распиливаем масив URLs на куски длиной по N для обхода проблем обрыва сервера
+            var items = Parser.SplitUrlsListByN(urls, lenght:3);
+            
+            if (!showDetailed.IsChecked.Value)
+                outputBoard.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
+            foreach (var item in items)
             {
-                var pricesList = await PriceParser.GetPricesListAsync(Progress, urls, startParse);
+                try // выгружаем нужную инфу
+                {
+                    var pricesList = await Parser.GetPricesListAsync(Progress, item);
 
-                if (showDetailed.IsChecked.Value)
-                    PriceParser.ShowOnBoardPricesDetailed(hotelUrlSettings, outputBoard, pricesList);
-                else
-                    PriceParser.ShowOnBoardPrices(hotelUrlSettings, outputBoard, pricesList);
+                    if (showDetailed.IsChecked.Value)
+                        Parser.ShowOnBoardPricesDetailed(hotelUrlSettings, outputBoard, pricesList);
+                    else
+                        Parser.ShowOnBoardPrices(outputBoard, pricesList);
+                }
+                catch (Exception ex)
+                {
+                    outputBoard.Text += ex.Message;
+                }
             }
-            catch (Exception ex)
+
+            if (Progress.Value != Progress.Maximum)
             {
-                outputBoard.Text += ex.Message;
+                outputBoard.Text += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";
             }
 
             // включаем UI
             Progress.Value = 0;
-            Starter.IsEnabled = true;
+            StarterButton.IsEnabled = true;
             showDetailed.IsEnabled = true;
         }
 
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
+        }
+
+        private void StartDateChanged(object sender, RoutedEventArgs e)
+        {
+            if (endDate.SelectedDate <= startDate.SelectedDate)
+            {
+                endDate.SelectedDate = ((DateTime)startDate.SelectedDate).AddDays(1);
+            }
+            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)startDate.SelectedDate);
+            endDate.BlackoutDates.Add(blackoutRange);
+        }
+
+        private void SetDatepickersSettings ()
+        {
+            startDate.SelectedDate = DateTime.Today;
+            endDate.SelectedDate = DateTime.Today.AddDays(1);
+
+            startDate.BlackoutDates.AddDatesInPast();
+            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)startDate.SelectedDate);
+            endDate.BlackoutDates.Add(blackoutRange);
         }
     }
 }

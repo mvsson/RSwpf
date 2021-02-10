@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace RateShopperWPF
-{ 
+{
     class UrlOnDate
     {
         public string Link { get; set; }
@@ -34,8 +34,8 @@ namespace RateShopperWPF
                 linkDate.Link = _url + $"?checkin={checkin:yyyy-MM-dd};checkout={checkout:yyyy-MM-dd}";
                 linkDate.Date = checkin;
                 result.Add(linkDate);
-                checkin = checkin.AddDays(range.Step);
-                checkout = checkout.AddDays(range.Step);
+                checkin = checkin.AddDays(range.pagesStep);
+                checkout = checkout.AddDays(range.pagesStep);
             }
             return result.ToArray();
         }

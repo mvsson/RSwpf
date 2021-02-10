@@ -33,20 +33,22 @@ namespace RateShopperWPF
             Progress.Maximum = urls.Length;
 
             // Распиливаем масив URLs на куски длиной по N для обхода проблем обрыва сервера
-            var SplitUrls = Parser.SplitUrlsListByN(urls, lenght:16);
-            
+            var SplitUrls = Parser.SplitUrlsListByN(urls, lenght: 2);
+
             if (!showDetailed.IsChecked.Value)
                 outputBoard.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
             foreach (var _urls in SplitUrls)
             {
                 try // выгружаем нужную инфу
                 {
-                    var pricesList = await Parser.GetPricesListAsync(Progress, _urls);
-
-                    if (showDetailed.IsChecked.Value)
-                        outputBoard.Text += Parser.PricesToStringDetailed(hotelUrlSettings, pricesList);
-                    else
-                        outputBoard.Text += Parser.PricesToString(pricesList);
+                    var daysList = await Parser.GetPricesListAsync(Progress, _urls);
+                    foreach (var day in daysList)
+                    {
+                        if (showDetailed.IsChecked.Value)
+                            outputBoard.Text += day.GetAllPrices();
+                        else
+                            outputBoard.Text += day.GetPriceLine();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +82,7 @@ namespace RateShopperWPF
             endDate.BlackoutDates.Add(blackoutRange);
         }
 
-        private void SetDatepickersSettings ()
+        private void SetDatepickersSettings()
         {
             startDate.SelectedDate = DateTime.Today;
             endDate.SelectedDate = DateTime.Today.AddDays(1);

@@ -94,7 +94,7 @@
     </ApplicationDefinition>
     <Compile Include="core\DateSettings.cs" />
     <Compile Include="core\Parser.cs" />
-    <Compile Include="core\PriceLine.cs" />
+    <Compile Include="core\PriceData.cs" />
     <Compile Include="core\UrlSettings.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

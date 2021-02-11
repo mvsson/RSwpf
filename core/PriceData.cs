@@ -3,12 +3,7 @@ using System.Collections.Generic;
 
 namespace RateShopperWPF.core
 {
-    interface IGetterPriceLine
-    {
-        string GetPriceLine();
-    }
-
-    class PriceLine : IGetterPriceLine
+    class PriceLine
     {
         public string Category { get; set; }
         public string Price { get; set; }
@@ -27,7 +22,7 @@ namespace RateShopperWPF.core
         }
     }
 
-    class PriceByDay : IGetterPriceLine
+    class PriceByDay
     {
         public DateTime Date { get; set; }
         public List<PriceLine> Rates { get; set; }
@@ -37,15 +32,15 @@ namespace RateShopperWPF.core
         {
             Rates = new List<PriceLine>();
         }
-        public string GetPriceLine()  // возвращает минимальный тариф на дату, находящийся под индексом [0]
+        public string GetShortPriceText()  // возвращает минимальный тариф на дату, находящийся под индексом [0]
         {
             string priceLine = Date.ToString("dd-MM-yyyy") + "\t" + Rates[0].GetPriceLine();
             return priceLine;
         }
-        public string GetAllPrices()
+        public string GetDetailedPriceText()
         {
             string priceBlock = "\t" + Date.ToString("dd-MM-yyyy") + "\n";
-            Rates.ForEach(rate => priceBlock += rate.GetPriceLine());
+            Rates.ForEach(rate => priceBlock += "   " + rate.GetPriceLine());
             return priceBlock;
         }
     }

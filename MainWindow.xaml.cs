@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using RateShopperWPF.core;
 
 namespace RateShopperWPF
 {
@@ -32,8 +33,8 @@ namespace RateShopperWPF
             UrlOnDate[] urls = hotelUrlSettings.GetUrlsList(parsingDates);
             Progress.Maximum = urls.Length;
 
-            // Распиливаем масив URLs на куски длиной по N для обхода проблем обрыва сервера
-            var SplitUrls = Parser.SplitUrlsListByN(urls, lenght: 2);
+            // Распиливаем масив URLs на куски длиной по N для обхода проблем обрыва сервера (по дефолту на 16)
+            var SplitUrls = Parser.SplitUrlsListByN(urls);
 
             if (!showDetailed.IsChecked.Value)
                 outputBoard.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
@@ -41,13 +42,13 @@ namespace RateShopperWPF
             {
                 try // выгружаем нужную инфу
                 {
-                    var daysList = await Parser.GetPricesListAsync(Progress, _urls);
+                    var daysList = await Parser.GetRatesListAsync(Progress, _urls);
                     foreach (var day in daysList)
                     {
                         if (showDetailed.IsChecked.Value)
-                            outputBoard.Text += day.GetAllPrices();
+                            outputBoard.Text += day.GetDetailedPriceText();
                         else
-                            outputBoard.Text += day.GetPriceLine();
+                            outputBoard.Text += day.GetShortPriceText();
                     }
                 }
                 catch (Exception ex)

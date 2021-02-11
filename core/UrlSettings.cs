@@ -24,7 +24,7 @@ namespace RateShopperWPF
         }
         public UrlOnDate[] GetUrlsList(in DateSettings range)
         {
-            string _url = this.GetHotelPage();
+            string _url = GetHotelPage();
             List<UrlOnDate> result = new List<UrlOnDate>();
             DateTime checkin = range.Start;
             DateTime checkout = checkin.AddDays(1);
@@ -34,8 +34,8 @@ namespace RateShopperWPF
                 linkDate.Link = _url + $"?checkin={checkin:yyyy-MM-dd};checkout={checkout:yyyy-MM-dd}";
                 linkDate.Date = checkin;
                 result.Add(linkDate);
-                checkin = checkin.AddDays(range.pagesStep);
-                checkout = checkout.AddDays(range.pagesStep);
+                checkin = checkin.AddDays(range.PagesStep);
+                checkout = checkout.AddDays(range.PagesStep);
             }
             return result.ToArray();
         }

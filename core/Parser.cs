@@ -18,9 +18,9 @@ namespace RateShopperWPF
         /// <param name="progressBar"></param>
         /// <param name="urls"></param>
         /// <returns></returns>
-        public static async Task<PriceByDay[]> GetRatesListAsync(ProgressBar progressBar, UrlOnDate[] urls)
+        public static async Task<RatesByDay[]> GetRatesListAsync(ProgressBar progressBar, UrlOnDate[] urls)
         {
-            var pricesList = new PriceByDay[urls.Length];
+            var pricesList = new RatesByDay[urls.Length];
 
             await Task.WhenAll(
                 urls.AsParallel().Select(async (url, index) =>
@@ -57,14 +57,14 @@ namespace RateShopperWPF
         /// <param name="document"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        private static PriceByDay GetRatesByDay(IDocument document, DateTime date)
+        private static RatesByDay GetRatesByDay(IDocument document, DateTime date)
         {
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
-            PriceByDay result = new PriceByDay { Date = date };
+            RatesByDay result = new RatesByDay { Date = date };
 
             foreach (var item in blocks)
             {
-                var priceLine = new PriceLine();
+                var priceLine = new Rate();
                 // парсим названия категорий
                 var category = GetParse(in item, "span", "hprt-roomtype-icon-link ");
                 foreach (var _item in category)

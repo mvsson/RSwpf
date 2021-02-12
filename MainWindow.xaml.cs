@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using RateShopperWPF.core;
@@ -10,22 +12,27 @@ namespace RateShopperWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        GridCollection GridData { get; }
         public MainWindow()
         {
             InitializeComponent();
             SetDatepickersSettings();
+            HotelLinkInput.ToolTip = "Вставьте относительный URL отеля с букинга,\n" +
+                                    "то что между 'booking.com/hotel/ru/' и '.html'";
+            GridData = new GridCollection();
+            DataGridRatesOutput.ItemsSource = GridData.Source;
         }
-
         private async void Starter_Click(object sender, RoutedEventArgs e)
         {
             // Выключаем UI
             StarterButton.IsEnabled = false;
-            showDetailed.IsEnabled = false;
+            IsShowDetailed.IsEnabled = false;
 
             // Достаём информацию из форм
-            string hotelLink = hotelLinkInput.Text;
+            string hotelLink = HotelLinkInput.Text;
             DateTime startParse = (DateTime)(startDate.SelectedDate);
             DateTime endParse = (DateTime)(endDate.SelectedDate);
+            bool isShowDetailed = IsShowDetailed.IsChecked.Value;
 
             // Создаём список адресов для парсинга
             UrlSettings hotelUrlSettings = new UrlSettings(hotelLink);
@@ -36,36 +43,33 @@ namespace RateShopperWPF
             // Распиливаем масив URLs на куски длиной по N для обхода проблем обрыва сервера (по дефолту на 16)
             var SplitUrls = Parser.SplitUrlsListByN(urls);
 
-            if (!showDetailed.IsChecked.Value)
-                outputBoard.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
+            IOutput printer = isShowDetailed ? printer = new OutputDetailed() : new OutputShort();
+
+            if (!isShowDetailed)
+                TextBoxRates.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
+            
             foreach (var _urls in SplitUrls)
             {
-                try // выгружаем нужную инфу
+                try // выгружаем инфу
                 {
-                    var daysList = await Parser.GetRatesListAsync(Progress, _urls);
-                    foreach (var day in daysList)
-                    {
-                        if (showDetailed.IsChecked.Value)
-                            outputBoard.Text += day.GetDetailedPriceText();
-                        else
-                            outputBoard.Text += day.GetShortPriceText();
-                    }
+                    RatesByDay[] daysList = await Parser.GetRatesListAsync(Progress, _urls);
+
+                    TextBoxRates.Text += RatesByDay.GetText(printer, daysList);
+
+                    RatesByDay.GetGrid(printer, daysList).ToList().ForEach(item => GridData.Add(item));
                 }
                 catch (Exception ex)
                 {
-                    outputBoard.Text += ex.Message;
+                    TextBoxRates.Text += ex.Message;
                 }
             }
-
             if (Progress.Value != Progress.Maximum)
-            {
-                outputBoard.Text += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";
-            }
+                TextBoxRates.Text += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";            
 
             // включаем UI
             Progress.Value = 0;
             StarterButton.IsEnabled = true;
-            showDetailed.IsEnabled = true;
+            IsShowDetailed.IsEnabled = true;
         }
 
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

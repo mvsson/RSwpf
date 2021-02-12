@@ -92,9 +92,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="core\OutputSettings.cs" />
     <Compile Include="core\DateSettings.cs" />
     <Compile Include="core\Parser.cs" />
-    <Compile Include="core\PriceData.cs" />
+    <Compile Include="core\RateData.cs" />
     <Compile Include="core\UrlSettings.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

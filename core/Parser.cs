@@ -41,7 +41,7 @@ namespace RateShopperWPF
         /// но не меньше двухкратного значения 
         /// </param>
         /// <returns></returns>
-        public static UrlOnDate[][] SplitUrlsListByN(UrlOnDate[] urls, int lenght=16)
+        public static UrlOnDate[][] SplitUrlsListByN(UrlOnDate[] urls, int lenght = 16)
         {
             int i = 0;
             var items = from s in urls
@@ -50,7 +50,6 @@ namespace RateShopperWPF
                         select g.ToArray();
             return items.ToArray();
         }
-
         /// <summary>
         /// Создаёт и заполняет экземпляр "PriceByDay" данными из DOM исходника
         /// </summary>
@@ -76,6 +75,11 @@ namespace RateShopperWPF
                 foreach (var _item in price)
                 {
                     priceLine.Price = _item.TextContent.Trim();
+                }
+                var meal = GetParse(in item, "li", "jq_tooltip  rt_clean_up_options");
+                foreach (var _item in meal)
+                {
+                    priceLine.Meal = _item.TextContent.Trim();
                 }
                 result.Rates.Add(priceLine);
             }

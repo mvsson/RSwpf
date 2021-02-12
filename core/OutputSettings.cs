@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RateShopperWPF.core
 {
@@ -50,14 +50,14 @@ namespace RateShopperWPF.core
     {
         public DataGridRateRow[] GetGrid(params RatesByDay[] days)
         {
-            
+
             var output = days.Select(day => new DataGridRateRow(day.Date, day.Rates[0])).ToArray();
             return output;
         }
         public string GetText(params RatesByDay[] days)
         {
             string output = string.Empty;
-            foreach(var day in days)
+            foreach (var day in days)
             {
                 output += day.Date.ToShortDateString() + day.Rates[0].GetPriceLine();
             }
@@ -69,7 +69,7 @@ namespace RateShopperWPF.core
     {
         public DataGridRateRow[] GetGrid(params RatesByDay[] days)
         {
-            var output = new List<DataGridRateRow>();            
+            var output = new List<DataGridRateRow>();
             foreach (var day in days)
             {
                 output.AddRange(day.Rates.Where(rate => rate.Category != null).Select(rate => new DataGridRateRow(day.Date, rate)));

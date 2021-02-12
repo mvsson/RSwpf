@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,8 +29,8 @@ namespace RateShopperWPF
 
             // Достаём информацию из форм
             string hotelLink = HotelLinkInput.Text;
-            DateTime startParse = (DateTime)(startDate.SelectedDate);
-            DateTime endParse = (DateTime)(endDate.SelectedDate);
+            DateTime startParse = (DateTime)StartDate.SelectedDate;
+            DateTime endParse = (DateTime)EndDate.SelectedDate;
             bool isShowDetailed = IsShowDetailed.IsChecked.Value;
 
             // Создаём список адресов для парсинга
@@ -47,7 +46,6 @@ namespace RateShopperWPF
 
             if (!isShowDetailed)
                 TextBoxRates.Text += "Минимальные тарифы в отеле " + hotelUrlSettings.HotelLink + ", на даты:" + "\n";
-            
             foreach (var _urls in SplitUrls)
             {
                 try // выгружаем инфу
@@ -64,7 +62,7 @@ namespace RateShopperWPF
                 }
             }
             if (Progress.Value != Progress.Maximum)
-                TextBoxRates.Text += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";            
+                TextBoxRates.Text += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";
 
             // включаем UI
             Progress.Value = 0;
@@ -72,29 +70,41 @@ namespace RateShopperWPF
             IsShowDetailed.IsEnabled = true;
         }
 
-        private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
-
         private void StartDateChanged(object sender, RoutedEventArgs e)
         {
-            if (endDate.SelectedDate <= startDate.SelectedDate)
+            if (StartDate.SelectedDate == null)
             {
-                endDate.SelectedDate = ((DateTime)startDate.SelectedDate).AddDays(1);
+                StartDate.SelectedDate = DateTime.Today;
             }
-            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)startDate.SelectedDate);
-            endDate.BlackoutDates.Add(blackoutRange);
+            if (EndDate.SelectedDate <= StartDate.SelectedDate)
+            {
+                EndDate.SelectedDate = ((DateTime)StartDate.SelectedDate).AddDays(1);
+            }
+            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)StartDate.SelectedDate);
+            EndDate.BlackoutDates.Add(blackoutRange);
         }
-
+        private void EndDateChanged(object sender, RoutedEventArgs e)
+        {
+            if (EndDate.SelectedDate == null)
+            {
+                EndDate.SelectedDate = ((DateTime)StartDate.SelectedDate).AddDays(1);
+            }
+        }
         private void SetDatepickersSettings()
         {
-            startDate.SelectedDate = DateTime.Today;
-            endDate.SelectedDate = DateTime.Today.AddDays(1);
+            StartDate.SelectedDate = DateTime.Today;
+            EndDate.SelectedDate = DateTime.Today.AddDays(1);
 
-            startDate.BlackoutDates.AddDatesInPast();
-            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)startDate.SelectedDate);
-            endDate.BlackoutDates.Add(blackoutRange);
+            StartDate.BlackoutDates.AddDatesInPast();
+            var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)StartDate.SelectedDate);
+            EndDate.BlackoutDates.Add(blackoutRange);
+        }
+        private void DontClick_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < 1; i++)
+                System.Diagnostics.Process.Start("https://youtu.be/UH9f6nqA0Gk");
+            for (int i = 0; i < 1; i++)
+                MessageBox.Show("ау ты шо там делаешь");
         }
     }
 }

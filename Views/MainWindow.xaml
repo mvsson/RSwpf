@@ -1,0 +1,82 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RateShopperWPF"
+        xmlns:vm="clr-namespace:RateShopperWPF.ViewModels"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" 
+        x:Class="RateShopperWPF.Views.MainWindow"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="RateShopper" Height="460" Width="820" WindowStyle="ThreeDBorderWindow" MinWidth="820" MinHeight="460">
+    <Window.Resources>
+        <vm:MainViewModel x:Key="MainVMSource"/>
+    </Window.Resources>
+    <Grid MinWidth="792" MinHeight="419" DataContext="{StaticResource MainVMSource}">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                <GradientStop Color="#FFC67DF9"/>
+                <GradientStop Color="#FF74025A" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <TextBox x:Name="HotelLinkInput" 
+                 Text="{Binding Mode=TwoWay, Path=InputLink}"
+                 Width="174" Background="AliceBlue" BorderThickness="2" VerticalAlignment="Top" HorizontalAlignment="Left" 
+                 Margin="20,8,0,0" Height="29" FontSize="16" MaxLines="1"/>
+        <Button x:Name="StarterButton" Content="Показать" 
+                Command="{Binding Path=StarterCommand}" 
+                IsEnabled="{Binding Mode=OneWay, Path=IsEnabledStarterButton}"
+                Margin="635,6,0,0" FontSize="18" FontWeight="Bold" Width="147" Height="33" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged" 
+                    SelectedDate="{Binding Mode=OneWayToSource, Path=InputStartDate}"
+                    Background="AliceBlue" Margin="230,8,0,0" FontSize="16" Height="29" HorizontalAlignment="Left" Width="130" VerticalAlignment="Top" />
+        <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged"
+                    SelectedDate="{Binding Mode=OneWayToSource, Path=InputEndDate}"
+                    Background="AliceBlue" Margin="411,8,0,0" FontSize="16" Width="130" Height="29" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.575,0.414" />
+        <TextBlock Text="С:" HorizontalAlignment="Left" Margin="212,14,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379" Width="28"/>
+        <TextBlock Text="По:" HorizontalAlignment="Left" Margin="383,14,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold"/>
+        <ProgressBar x:Name="Progress" HorizontalAlignment="Center" Height="15" Margin="10,0,10,10" VerticalAlignment="Bottom" Grid.ColumnSpan="4" Width="772"
+                     Value="{Binding Mode=OneWay, Path=PBprogressBar.Value}"
+                     Maximum="{Binding Mode=OneWay, Path=PBprogressBar.Maximum}"/>
+        <CheckBox x:Name="IsShowDetailed" Content="Показать&#xA;подробно" VerticalContentAlignment="Center" Cursor="Hand" 
+                  IsChecked="{Binding Mode=OneWayToSource, Path=InputIsShowDetailed}"
+                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}"
+                  HorizontalAlignment="Left" Margin="552,7,0,0" VerticalAlignment="Top" Width="83" Height="28" FontSize="11" RenderTransformOrigin="0.5,0.5"/>
+        <GroupBox Margin="10,44,10,30" BorderThickness="0" >
+            <TabControl TabStripPlacement="Bottom" Margin="0,0,0,-17">
+                <TabItem>
+                    <TabItem.Header>Текст</TabItem.Header>
+                    <TextBox x:Name="TextBoxRates" AcceptsReturn="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Padding="5" TextWrapping="Wrap" Grid.ColumnSpan="4">
+                        <Binding Mode="OneWay" Path="TextSource" />
+                    </TextBox>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>Таблица</TabItem.Header>
+                    <DataGrid x:Name="DataGridRatesOutput" 
+                              ItemsSource="{Binding Mode=OneWay, Path=GridSourse}"
+                              AutoGenerateColumns="False"  FontSize="14"
+                              RowBackground="LightBlue" AlternatingRowBackground="LightGoldenrodYellow">
+                       
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" Width="100" MinWidth="70"/>
+                            <DataGridTextColumn Header="Стоимость" Binding="{Binding Path=Price}" Width="100" MinWidth="70"/>
+                            <DataGridTextColumn Header="Категория номера" Binding="{Binding Path=Category}" Width="*" MinWidth="150"/>
+                            <DataGridTextColumn Header="Питание" Binding="{Binding Path=Meal}" Width="200" MinWidth="150"/>
+                            <DataGridTextColumn Header="Отель" Binding="{Binding Path=ParentLink}" Width="70" MinWidth="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>Дашборд</TabItem.Header>
+                    <ListView>
+                        <System:String xml:space="preserve">Cuming soon... </System:String>
+                        <Button x:Name="DontClick" Content="don't click YOPTA" Click="DontClick_Click"/>
+                    </ListView>
+                </TabItem>
+            </TabControl>
+        </GroupBox>
+    </Grid>
+</Window>

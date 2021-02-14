@@ -1,7 +1,10 @@
 ﻿using System;
 
-namespace RateShopperWPF
+namespace RateShopperWPF.Models
 {
+    /// <summary>
+    /// Хранит в себе DateRange для класса UrlSettings
+    /// </summary>
     class DateSettings
     {
         public DateTime Start { get; } = DateTime.Today;

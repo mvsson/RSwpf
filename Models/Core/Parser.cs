@@ -6,11 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using AngleSharp;
 using AngleSharp.Dom;
-using RateShopperWPF.core;
 
-namespace RateShopperWPF
+namespace RateShopperWPF.Models
 {
-    class Parser
+    /// <summary>
+    /// Производит загрузку и обрабатывание DOM исходника страницы, получаемой из класса UrlSettings
+    /// Выводит данные в класс RateData
+    /// </summary>
+    static class Parser
     {
         /// <summary>
         /// Создаёт массив "PriceByDay" и заполняет его с помощью .AsParsllel. Отображает процесс на прогрессбар.
@@ -26,29 +29,12 @@ namespace RateShopperWPF
                 urls.AsParallel().Select(async (url, index) =>
                 {
                     var domDocument = await GetDomPageAsync(url.Link);
-                    pricesList[index] = GetRatesByDay(domDocument, url.Date);
+                    pricesList[index] = GetRatesByDay(domDocument, url);
                     Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
+                    
+
                 }));
             return pricesList;
-        }
-        /// <summary>
-        /// Разделяет массив "urls" на массивы длинной по "lenght".
-        /// Необходим для обхода разрыва соединения со стороны сервера.
-        /// </summary>
-        /// <param name="urls"></param>
-        /// <param name="lenght">
-        /// Для большей производительности значение должно быть кратно количеству потоков процессора, 
-        /// но не меньше двухкратного значения 
-        /// </param>
-        /// <returns></returns>
-        public static UrlOnDate[][] SplitUrlsListByN(UrlOnDate[] urls, int lenght = 16)
-        {
-            int i = 0;
-            var items = from s in urls
-                        let num = i++
-                        group s by num / lenght into g
-                        select g.ToArray();
-            return items.ToArray();
         }
         /// <summary>
         /// Создаёт и заполняет экземпляр "PriceByDay" данными из DOM исходника
@@ -56,14 +42,18 @@ namespace RateShopperWPF
         /// <param name="document"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        private static RatesByDay GetRatesByDay(IDocument document, DateTime date)
+        private static RatesByDay GetRatesByDay(IDocument document, UrlOnDate url)
         {
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
-            RatesByDay result = new RatesByDay { Date = date };
-
+            RatesByDay result = new RatesByDay(url.BaseLink, url.Date);
+            if (blocks.Count() == 0)
+            {
+                result.WithoutAnyRate();
+                return result;
+            }   
             foreach (var item in blocks)
             {
-                var priceLine = new Rate();
+                var priceLine = new RateLine();
                 // парсим названия категорий
                 var category = GetParse(in item, "span", "hprt-roomtype-icon-link ");
                 foreach (var _item in category)

@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace RateShopperWPF.Models
 {
-    /// <summary>
-    /// Создает список страниц привязанных к дате
-    /// </summary>
     class UrlOnDate
     {
         public string BaseLink { get; set; }
@@ -17,6 +14,9 @@ namespace RateShopperWPF.Models
             BaseLink = link;
         }
     }
+    /// <summary>
+    /// Создает список страниц привязанных к дате
+    /// </summary>
     class UrlSettings
     {
         private string HotelLink { get; }

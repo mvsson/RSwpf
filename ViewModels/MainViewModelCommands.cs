@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -32,10 +30,9 @@ namespace RateShopperWPF.ViewModels
             IsEnabledDetailedCheckbox = false;
 
             UrlOnDate[] urls = UrlSettings.GetUrlsList(InputStartDate, InputEndDate, InputLink);
-            UrlOnDate[][] splitUrls = UrlSettings.SplitUrlsListByN(urls);
+            UrlOnDate[][] splitUrls = UrlSettings.SplitUrlsListByN(urls, lenght: 16);
 
-            PBprogressBar.Maximum = urls.Length;
-
+            LoadingStatus.Maximum = urls.Length;
 
             IOutput printer = InputIsShowDetailed ? printer = new OutputDetailed() : new OutputShort();
 
@@ -43,7 +40,7 @@ namespace RateShopperWPF.ViewModels
             {
                 try // выгружаем инфу
                 {
-                    RatesByDay[] daysList = await Parser.GetRatesListAsync(PBprogressBar, _urls);
+                    RatesByDay[] daysList = await Parser.GetRatesListAsync(LoadingStatus, _urls);
 
                     TextSource += RatesByDay.GetText(printer, daysList);
 
@@ -54,11 +51,11 @@ namespace RateShopperWPF.ViewModels
                     await Task.Run(() => MessageBox.Show(ex.Message));
                 }
             }
-            if (PBprogressBar.Value != PBprogressBar.Maximum)
+            if (LoadingStatus.Value != LoadingStatus.Maximum)
                 TextSource += "Таки где-то была ошибка в выгрузке данных, будь внимателен.";
 
             // включаем UI
-            PBprogressBar.Value = 0;
+            LoadingStatus.Value = 0;
             IsEnabledStarterButton = true;
             IsEnabledDetailedCheckbox = true;
         }

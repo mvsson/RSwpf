@@ -9,14 +9,8 @@ namespace RateShopperWPF.Models
     /// <summary>
     /// Класс для хранения и взаимодействия с ObservableCollection из ViewModel
     /// </summary>
-    public class GridCollection//: INotifyPropertyChanged
+    public class GridCollection
     {
-        /*public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }*/
-
         public ObservableCollection<DataGridRateRow> Source { get; set; }
         public GridCollection()
         {
@@ -25,13 +19,10 @@ namespace RateShopperWPF.Models
         public void AddRange(IList<DataGridRateRow> source)
         {
             source.ToList().ForEach(item => Source.Add(item));
-            //OnPropertyChanged("GridSourse");
-
         }
         public void Add(DataGridRateRow item)
         {
             Source.Add(item);
-            //OnPropertyChanged("GridSourse");
         }
     }
     /// <summary>

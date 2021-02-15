@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Prism.Commands;
 using RateShopperWPF.Models;
 
 namespace RateShopperWPF.ViewModels
@@ -21,44 +14,58 @@ namespace RateShopperWPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+
+        #region "Input Properties"
+        public string InputLink { get; set; } = "ra-nevskiy-44.ru";
+
+        public DateTime InputStartDate { private get; set; } = DateTime.Today;
+        public DateTime InputEndDate { private get; set; } = DateTime.Today.AddDays(1);
+        public bool InputIsShowDetailed { private get; set; }
+        #endregion
+
+
+        #region "Output Properties"
         private static GridCollection _gridSourse = new GridCollection();
         public ObservableCollection<DataGridRateRow> GridSourse
         {
-            get
-            {
-                return _gridSourse.Source; 
-            }
+            get => _gridSourse.Source;
             set
             {
                 _gridSourse.Source = value;
                 OnPropertyChanged(nameof(GridSourse));
             }
         }
+
         private string _textSource;
         public string TextSource
         {
-            get
-            {
-                return _textSource;
-            }
+            get => _textSource;
             set
             {
                 _textSource = value;
                 OnPropertyChanged(nameof(TextSource));
             }
         }
-        public string InputLink { get; set; } = "ra-nevskiy-44.ru";
 
-        public DateTime InputStartDate { private get; set; } = DateTime.Today;
-        public DateTime InputEndDate { private get; set; } = DateTime.Today.AddDays(1);
-        public bool InputIsShowDetailed { private get; set; }
+        private ProgressBar _pb = new ProgressBar();
+        public ProgressBar LoadingStatus
+        {
+            get => _pb;
+            set
+            {
+                _pb = value;
+                OnPropertyChanged(nameof(LoadingStatus));
+            }
+        }
+
+        #endregion
+
+
+        #region "Enabled UI"
         private bool _isEnabledStarterButton = true;
         public bool IsEnabledStarterButton
         {
-            get
-            {
-                return _isEnabledStarterButton;
-            }
+            get => _isEnabledStarterButton;
             set
             {
                 _isEnabledStarterButton = value;
@@ -68,28 +75,13 @@ namespace RateShopperWPF.ViewModels
         private bool _isEnabledDetailedCheckbox = true;
         public bool IsEnabledDetailedCheckbox
         {
-            get
-            {
-                return _isEnabledDetailedCheckbox;
-            }
+            get => _isEnabledDetailedCheckbox;
             set
             {
                 _isEnabledDetailedCheckbox = value;
                 OnPropertyChanged(nameof(IsEnabledDetailedCheckbox));
             }
         }
-        private ProgressBar _pb = new ProgressBar();
-        public ProgressBar PBprogressBar
-        {
-            get
-            {
-                return _pb;
-            }
-            set
-            {
-                _pb = value;
-                //OnPropertyChanged(nameof(PBprogressBar));
-            }
-        }
+        #endregion
     }
 }

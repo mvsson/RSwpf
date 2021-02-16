@@ -67,6 +67,12 @@
     <Reference Include="AngleSharp, Version=0.14.0.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.14.0\lib\net472\AngleSharp.dll</HintPath>
     </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=8.0.0.1909, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.8.0.0.1909\lib\net47\Prism.dll</HintPath>
     </Reference>
@@ -96,8 +102,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\OutputData\GridData.cs" />
-    <Compile Include="Models\OutputData\IDataOutput.cs" />
+    <Compile Include="Models\OutputData\ChartOutput.cs" />
+    <Compile Include="Models\OutputData\GridOutput.cs" />
     <Compile Include="Models\InnerData\DateSettings.cs" />
     <Compile Include="Models\Core\Parser.cs" />
     <Compile Include="Models\InnerData\RateData.cs" />
@@ -110,8 +116,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\MainViewModelProperties.cs" />
-    <Compile Include="ViewModels\MainViewModelCommands.cs" />
+    <Compile Include="ViewModels\MainViewModels\ChartsProperties.cs" />
+    <Compile Include="ViewModels\MainViewModels\MainProperties.cs" />
+    <Compile Include="ViewModels\MainViewModels\Commands.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using RateShopperWPF.ViewModels;
+using System.Linq;
+using LiveCharts.Wpf;
 
 namespace RateShopperWPF.Models
 {
@@ -8,34 +9,26 @@ namespace RateShopperWPF.Models
     /// Хранит в себе вывод RateLine'ов из класса Parser
     /// Далее из этого класса собирается вывод в ViewModel
     /// </summary>
-    class RatesByDay
+    class DateRates
     {
         public DateTime Date { get; }
-        public List<RateLine> Rates { get; }
-        public string RarentLink { get; }
-        public RatesByDay(string link, DateTime date)
+        public List<Rate> Rates { get; }
+        public string ParentLink { get; }
+        public DateRates(string link, DateTime date)
         {
-            Rates = new List<RateLine>();
-            RarentLink = link;
+            Rates = new List<Rate>();
+            ParentLink = link;
             Date = date;
         }
         public void WithoutAnyRate()
         {
-            this.Rates.Add(new RateLine { Category = "Нет доступных номеров" });
+            this.Rates.Add(new Rate { Price = "Нет доступных номеров" });
         }
-        public string GetText(IOutput printer)
-        {
-            return printer.GetText(this);
-        }
-        public DataGridRateRow[] GetGrid(IOutput printer)
+        public GridRateRow[] GetGrid(IDataGridOutput printer)
         {
             return printer.GetGrid(this);
         }
-        public static string GetText(IOutput printer, RatesByDay[] days)
-        {
-            return printer.GetText(days);
-        }
-        public static DataGridRateRow[] GetGrid(IOutput printer, RatesByDay[] days)
+        public static GridRateRow[] GetGrid(IDataGridOutput printer, DateRates[] days)
         {
             return printer.GetGrid(days);
         }
@@ -43,15 +36,28 @@ namespace RateShopperWPF.Models
     /// <summary>
     /// Создаётся для вывода из данных из класса Parser
     /// </summary>
-    public struct RateLine
+    public struct Rate
     {
         public string Category { get; set; }
         public string Price { get; set; }
         public string Meal { get; set; }
 
-        public string GetLine()
+        public double GetPriceDoubleOrDefault()
         {
-            return $"\t{Price}\t{Meal}\t{Category}\n";
+            string nums = "0123456789";
+            string res = string.Empty;
+            double price;
+            foreach (var ch in Price)
+            {
+                if (".,".Contains(ch))
+                    break;
+                if (nums.Contains(ch))
+                {
+                    res += ch;
+                }
+            }
+            price = res == "" ? double.NaN : int.Parse(res);
+            return price;
         }
     }
 }

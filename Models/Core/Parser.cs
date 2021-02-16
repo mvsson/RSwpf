@@ -21,9 +21,9 @@ namespace RateShopperWPF.Models
         /// <param name="progressBar"></param>
         /// <param name="urls"></param>
         /// <returns></returns>
-        public static async Task<RatesByDay[]> GetRatesListAsync(ProgressBar progressBar, UrlOnDate[] urls)
+        public static async Task<DateRates[]> GetRatesListAsync(ProgressBar progressBar, params UrlOnDate[] urls)
         {
-            var pricesList = new RatesByDay[urls.Length];
+            var pricesList = new DateRates[urls.Length];
 
             await Task.WhenAll(
                 urls.AsParallel().Select(async (url, index) =>
@@ -31,8 +31,6 @@ namespace RateShopperWPF.Models
                     var domDocument = await GetDomPageAsync(url.Link);
                     pricesList[index] = GetRatesByDay(domDocument, url);
                     Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
-                    
-
                 }));
             return pricesList;
         }
@@ -42,10 +40,10 @@ namespace RateShopperWPF.Models
         /// <param name="document"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        private static RatesByDay GetRatesByDay(IDocument document, UrlOnDate url)
+        private static DateRates GetRatesByDay(IDocument document, UrlOnDate url)
         {
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
-            RatesByDay result = new RatesByDay(url.BaseLink, url.Date);
+            DateRates result = new DateRates(url.BaseLink, url.Date);
             if (blocks.Count() == 0)
             {
                 result.WithoutAnyRate();
@@ -53,7 +51,7 @@ namespace RateShopperWPF.Models
             }   
             foreach (var item in blocks)
             {
-                var priceLine = new RateLine();
+                var priceLine = new Rate();
                 // парсим названия категорий
                 var category = GetParse(in item, "span", "hprt-roomtype-icon-link ");
                 foreach (var _item in category)
@@ -61,7 +59,7 @@ namespace RateShopperWPF.Models
                     priceLine.Category = _item.TextContent.Trim();
                 }
                 // парсим цены
-                var price = GetParse(in item, "div", "bui-price-display__value prco-inline-block-maker-helper prco-font16-helper ");
+                var price = GetParse(in item, "div", "bui-price-display__value prco-inline-block-maker-helper prco-f-font-heading ");
                 foreach (var _item in price)
                 {
                     priceLine.Price = _item.TextContent.Trim();

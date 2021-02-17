@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Collections.Generic;
 using System.Linq;
 using LiveCharts;
-using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 
 namespace RateShopperWPF.Models

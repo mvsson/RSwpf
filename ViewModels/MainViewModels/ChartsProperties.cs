@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using LiveCharts;
 using LiveCharts.Configurations;
 using RateShopperWPF.Models;

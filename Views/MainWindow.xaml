@@ -10,7 +10,7 @@
         x:Class="RateShopperWPF.Views.MainWindow"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="820" MinHeight="600" Width="751" Height="501">
+        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="850" MinHeight="600" Width="751" Height="501">
     <Window.Resources>
         <vm:MainViewModel x:Key="MainVMSource"/>
     </Window.Resources>
@@ -19,24 +19,23 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBox x:Name="HotelLinkInput" Padding="8" BorderThickness="1"
-                 Text="{Binding Mode=TwoWay, Path=InputLink}"
-                 Width="166" VerticalAlignment="Top" HorizontalAlignment="Left" Height="38" FontSize="16" MaxLines="1"/>
+                 Text="{Binding Mode=TwoWay, Path=InputLink}" VerticalAlignment="Top" Height="38" FontSize="16" MaxLines="1" Margin="0,0,642,0" HorizontalAlignment="Center" Width="170"/>
         <Button x:Name="StarterButton" Content="Показать" 
                 Command="{Binding Path=StarterCommand}" 
                 IsEnabled="{Binding Mode=OneWay, Path=IsEnabledStarterButton}"
-                Margin="677,2,0,0" FontSize="18" FontWeight="Bold" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="135" />
+                Margin="677,2,0,0" FontSize="18" FontWeight="Bold" Height="33" VerticalAlignment="Top" Width="135" HorizontalAlignment="Center" />
         <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged" Background="AliceBlue"
                     SelectedDate="{Binding Mode=OneWayToSource, Path=InputStartDate}"
-                    Margin="198,3,0,0" FontSize="16" Height="35" HorizontalAlignment="Left" Width="126" VerticalAlignment="Top" />
+                    Margin="230,0,439,0" FontSize="16" Height="35" VerticalAlignment="Top" HorizontalAlignment="Center" Width="143" />
         <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged" Background="AliceBlue"
                     SelectedDate="{Binding Mode=OneWayToSource, Path=InputEndDate}"
-                    Margin="392,3,0,0" FontSize="16" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Width="124" />
-        <TextBlock Text="С:" HorizontalAlignment="Left" Margin="176,10,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379" Width="22" Height="19"/>
-        <TextBlock Text="По:" Margin="362,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold" Width="25" HorizontalAlignment="Left" Height="19"/>
+                    Margin="434,0,237,0" FontSize="16" Height="35" VerticalAlignment="Top" HorizontalAlignment="Center" Width="141" />
+        <TextBlock Text="С:" Margin="188,10,600,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379" Height="19" HorizontalAlignment="Center" Width="24"/>
+        <TextBlock Text="По:" Margin="390,10,392,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold" Height="19" HorizontalAlignment="Center" Width="30"/>
         <CheckBox x:Name="IsShowDetailed" Content="Показать&#xA;подробно" VerticalContentAlignment="Center" Cursor="Hand" 
                   IsChecked="{Binding Mode=OneWayToSource, Path=InputIsShowDetailed}"
-                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}" Margin="538,0,0,0" VerticalAlignment="Top" Height="38" FontSize="11" RenderTransformOrigin="0.534,0.1" HorizontalAlignment="Left" Width="88"/>
-        <ProgressBar Panel.ZIndex="10" x:Name="Progress" HorizontalAlignment="Left" Margin="132,59,0,0" Width="504"
+                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}" Margin="580,-3,140,0" VerticalAlignment="Top" Height="38" FontSize="11" RenderTransformOrigin="0.534,0.1" HorizontalAlignment="Center" Width="92"/>
+        <ProgressBar Panel.ZIndex="10" x:Name="Progress" HorizontalAlignment="Center" Margin="132,59,176,0" Width="504"
                      Value="{Binding Mode=OneWay, Path= LoadingStatus.Value}"
                      Maximum="{Binding Mode=OneWay, Path=LoadingStatus.Maximum}" Height="11" VerticalAlignment="Top"/>
         <TabControl TabStripPlacement="Top" Margin="0,49,0,0">
@@ -70,7 +69,7 @@
                                         Grid.Row="0" Grid.ColumnSpan="3" Background="LightBlue"
                                         LegendLocation="Bottom" Zoom="X">
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Минимальный доступный тариф" 
+                            <lvc:Axis Title="Минимальный доступный тариф на двоих" 
                                       MinValue="0" LabelFormatter="{Binding FormatterCost}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
@@ -105,6 +104,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button Command="{Binding ClearCommand}" Content="Очистить дашборд"  HorizontalAlignment="Left" Margin="651,38,0,0" VerticalAlignment="Top" Width="161"/>
+        <Button Command="{Binding ClearCommand}" Content="Очистить дашборд"  HorizontalAlignment="Center" Margin="651,38,0,0" VerticalAlignment="Top" Width="161"/>
     </Grid>
 </Window>

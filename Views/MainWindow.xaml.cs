@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,7 +13,6 @@ namespace RateShopperWPF.Views
         public MainWindow()
         {
             InitializeComponent();
-             
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -33,6 +33,7 @@ namespace RateShopperWPF.Views
                 EndDate.SelectedDate = ((DateTime)StartDate.SelectedDate).AddDays(1);
             }
             var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)StartDate.SelectedDate);
+            EndDate.BlackoutDates.Clear();
             EndDate.BlackoutDates.Add(blackoutRange);
         }
         private void EndDateChanged(object sender, RoutedEventArgs e)
@@ -45,7 +46,7 @@ namespace RateShopperWPF.Views
         private void SetDatepickersSettings()
         {
             StartDate.SelectedDate = DateTime.Today;
-            EndDate.SelectedDate = DateTime.Today.AddDays(1);
+            EndDate.SelectedDate = DateTime.Today.AddMonths(1); 
 
             StartDate.BlackoutDates.AddDatesInPast();
             var blackoutRange = new CalendarDateRange(DateTime.MinValue, (DateTime)StartDate.SelectedDate);

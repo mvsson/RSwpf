@@ -17,8 +17,8 @@ namespace RateShopperWPF.ViewModels
         #region "Input Properties"
 
         public string InputLink { get; set; } = "ra-nevskiy-44.ru";
-        public DateTime InputStartDate { private get; set; } = DateTime.Today;
-        public DateTime InputEndDate { private get; set; } = DateTime.Today.AddDays(1);
+        public DateTime InputStartDate { private get; set; }
+        public DateTime InputEndDate { private get; set; }
         public bool InputIsShowDetailed { private get; set; }
         #endregion
 

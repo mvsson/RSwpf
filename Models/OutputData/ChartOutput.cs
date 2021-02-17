@@ -1,37 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Collections.Generic;
 using System.Linq;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 
 namespace RateShopperWPF.Models
 {
     class ChartLoader
     {
-        public List<string> Labels { get; private set; }
+        public Func<double, string> FormatterX { get; private set; }
         public LineSeries ChartMinRate { get; private set; }
         public LineSeries ChartRatesCounter { get; private set; }
         public LineSeries ChartRatesCounterPercent { get; private set; }
+        public ColumnSeries ChartColumn { get; private set; }
 
         public ChartLoader(string parentLink)
         {
-            Labels = new List<string>();
+            FormatterX = value => new DateTime((long)(value * TimeSpan.FromDays(1).Ticks)).ToString("d");
+            
             ChartMinRate = new LineSeries() 
             { 
                 Title = parentLink, 
-                Values = new ChartValues<double>(),
+                Values = new ChartValues<DateModel>(),
                 DataLabels = true
             };
             ChartRatesCounter = new LineSeries()
             {
                 Title = parentLink,
-                Values = new ChartValues<int>(),
+                Values = new ChartValues<DateModel>(),
                 DataLabels = true
             };
             ChartRatesCounterPercent = new LineSeries()
             {
                 Title = parentLink,
-                Values = new ChartValues<int>(),
+                Values = new ChartValues<DateModel>(),
                 DataLabels = true
+            };
+            ChartColumn = new ColumnSeries()
+            {
+                Values = new ChartValues<DateModel>()
             };
         }
         public void FillCharts(DateRates[] days, double maxCount)
@@ -40,18 +50,46 @@ namespace RateShopperWPF.Models
             {
                 AddChartMinRate(day);
                 AddChartsRatesCounter(day, maxCount);
+                AddChartColumn(day, 1);
             }
+        }
+        private void AddChartColumn(DateRates day, int i)
+        {
+            ChartColumn.Values.Add(new DateModel()
+            {
+                Date = day.Date,
+                Value = i,
+            });
         }
         private void AddChartMinRate(DateRates day)
         {
-            Labels.Add(day.Date.ToShortDateString());
-            ChartMinRate.Values.Add(day.Rates[0].GetPriceDoubleOrDefault());
+            ChartMinRate.Values.Add(new DateModel()
+            {
+                Value = day.Rates[0].GetPriceIntegerOrDefault(),
+                Date = day.Date
+            });
         }
         private void AddChartsRatesCounter(DateRates day, double maxCount)
         {
             int count = day.Rates.Where(rate => rate.Category != null).Count();
-            ChartRatesCounter.Values.Add(count);
-            ChartRatesCounterPercent.Values.Add((int)(count / maxCount * 100));
+            ChartRatesCounter.Values.Add(new DateModel()
+            {
+                Value = count,
+                Date = day.Date
+            });
+            if (maxCount == 0)
+                return;
+            ChartRatesCounterPercent.Values.Add(new DateModel()
+            { 
+                Value = (int)(count / maxCount * 100),
+                Date = day.Date
+            });
         }
     }
+    public class DateModel
+    {
+        public DateTime Date { get; set; }
+        public double Value { get; set; }
+    }
+
 }

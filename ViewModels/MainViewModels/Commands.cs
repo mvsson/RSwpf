@@ -35,11 +35,14 @@ namespace RateShopperWPF.ViewModels
             UrlOnDate[] urls = UrlSettings.GetUrlsList(InputStartDate, InputEndDate, InputLink);
             UrlOnDate[][] splitUrls = UrlSettings.SplitUrlsListByN(urls, lenght: 16);
 
-            LoadingStatus.Maximum = urls.Length+1;
+            LoadingStatus.Maximum = urls.Length + 1;
 
             var urlPast6Month = UrlSettings.GetUrlsList(DateTime.Today.AddDays(180), DateTime.Today.AddDays(181), InputLink).First();
             var ratesPast6Month = await Parser.GetRatesListAsync(LoadingStatus, urlPast6Month);
             double maxRatesCount = ratesPast6Month.First().Rates.Where(rate => rate.Category != null).Count();
+            if (maxRatesCount == 0)
+                _ = Task.Run(() => MessageBox.Show("Максимальное количество категорий не определено.\n" +
+                                                   "Процентное соотношение не будет отображено."));
 
             IDataGridOutput printer = InputIsShowDetailed ? printer = new OutputDetailed() : new OutputShort();
             var chartLoader = new ChartLoader(InputLink);
@@ -51,7 +54,7 @@ namespace RateShopperWPF.ViewModels
                     DateRates[] daysList = await Parser.GetRatesListAsync(LoadingStatus, _urls);
 
                     DateRates.GetGrid(printer, daysList).ToList().ForEach(item => GridSourse.Add(item));
-                    
+
                     chartLoader.FillCharts(daysList, maxRatesCount);
                 }
                 catch (Exception ex)
@@ -63,10 +66,10 @@ namespace RateShopperWPF.ViewModels
             ChartMinRate.Add(chartLoader.ChartMinRate);
             ChartRatesCounter.Add(chartLoader.ChartRatesCounter);
             ChartRateCountPercent.Add(chartLoader.ChartRatesCounterPercent);
-            chartLoader.Labels.ForEach(label => ChartLabels.Add(label));
-            
+            FormatterX = chartLoader.FormatterX;
+
             if (LoadingStatus.Value != LoadingStatus.Maximum)
-                await Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
+                _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
 
             // включаем UI
             LoadingStatus.Value = 0;
@@ -92,7 +95,6 @@ namespace RateShopperWPF.ViewModels
             ChartRatesCounter.Clear();
             ChartRateCountPercent.Clear();
             ChartMinRate.Clear();
-            ChartLabels.Clear();
             MessageBox.Show("Теперь чисто");
         }
         /*private void ResetZoomOnClick(object sender, RoutedEventArgs e)

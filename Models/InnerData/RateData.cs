@@ -42,7 +42,7 @@ namespace RateShopperWPF.Models
         public string Price { get; set; }
         public string Meal { get; set; }
 
-        public double GetPriceDoubleOrDefault()
+        public double GetPriceIntegerOrDefault()
         {
             string nums = "0123456789";
             string res = string.Empty;
@@ -56,7 +56,7 @@ namespace RateShopperWPF.Models
                     res += ch;
                 }
             }
-            price = res == "" ? double.NaN : int.Parse(res);
+            price = res == "" ? 0 : int.Parse(res);
             return price;
         }
     }

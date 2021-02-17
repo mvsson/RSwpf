@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiveCharts;
+using LiveCharts.Configurations;
+using RateShopperWPF.Models;
 
 namespace RateShopperWPF.ViewModels
 {
@@ -12,7 +10,7 @@ namespace RateShopperWPF.ViewModels
     {
         #region "Chart Properties"
 
-        private SeriesCollection _chartMinRate = new SeriesCollection();
+        private SeriesCollection _chartMinRate = new SeriesCollection(DayConfig);
         public SeriesCollection ChartMinRate
         {
             get => _chartMinRate;
@@ -22,7 +20,7 @@ namespace RateShopperWPF.ViewModels
                 OnPropertyChanged(nameof(ChartMinRate));
             }
         }
-        private SeriesCollection _chartRatesCounter = new SeriesCollection();
+        private SeriesCollection _chartRatesCounter = new SeriesCollection(DayConfig);
         public SeriesCollection ChartRatesCounter
         {
             get => _chartRatesCounter;
@@ -32,7 +30,7 @@ namespace RateShopperWPF.ViewModels
                 OnPropertyChanged(nameof(ChartRatesCounter));
             }
         }
-        private SeriesCollection _chartRatesCounterPercent = new SeriesCollection();
+        private SeriesCollection _chartRatesCounterPercent = new SeriesCollection(DayConfig);
         public SeriesCollection ChartRateCountPercent
         {
             get => _chartRatesCounterPercent;
@@ -42,20 +40,23 @@ namespace RateShopperWPF.ViewModels
                 OnPropertyChanged(nameof(ChartRateCountPercent));
             }
         }
-        private ObservableCollection<string> _chartLabels = new ObservableCollection<string>();
-        public ObservableCollection<string> ChartLabels
-        {
-            get => _chartLabels;
-            set
-            {
-                _chartLabels = value;
-                OnPropertyChanged(nameof(ChartLabels));
-            }
-        }
+        static private CartesianMapper<DateModel> DayConfig { get; } = Mappers.Xy<DateModel>()
+                .X(dateModel => dateModel.Date.Ticks / TimeSpan.FromDays(1).Ticks)
+                .Y(dateModel => dateModel.Value);
 
         public Func<double, string> FormatterCounter { get; } = value => value + " кат.";
         public Func<double, string> FormatterCost { get; } = value => value + " руб.";
         public Func<double, string> FormatterPercent { get; } = value => value + " %";
+        private Func<double, string> _formatterX;
+        public Func<double, string> FormatterX
+        {
+            get => _formatterX;
+            set
+            {
+                _formatterX = value;
+                OnPropertyChanged(nameof(FormatterX));
+            }
+        }
 
         #endregion
     }

@@ -10,44 +10,43 @@
         x:Class="RateShopperWPF.Views.MainWindow"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="820" MinHeight="600" Width="820" Height="600">
+        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="820" MinHeight="600" Width="751" Height="501">
     <Window.Resources>
         <vm:MainViewModel x:Key="MainVMSource"/>
     </Window.Resources>
-    <Grid MinWidth="792" MinHeight="419" DataContext="{StaticResource MainVMSource}" Background="#FF325B83" OpacityMask="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
+    <Grid MinWidth="792" MinHeight="419" DataContext="{StaticResource MainVMSource}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="101*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="HotelLinkInput" 
+        <TextBox x:Name="HotelLinkInput" Padding="8" BorderThickness="1"
                  Text="{Binding Mode=TwoWay, Path=InputLink}"
-                 Width="198" Background="LightBlue" BorderThickness="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="32" FontSize="16" MaxLines="1" Margin="10,0,0,0"/>
+                 Width="166" VerticalAlignment="Top" HorizontalAlignment="Left" Height="38" FontSize="16" MaxLines="1"/>
         <Button x:Name="StarterButton" Content="Показать" 
                 Command="{Binding Path=StarterCommand}" 
                 IsEnabled="{Binding Mode=OneWay, Path=IsEnabledStarterButton}"
-                Margin="667,0,0,0" FontSize="18" FontWeight="Bold" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="135" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" />
-        <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged" 
+                Margin="677,2,0,0" FontSize="18" FontWeight="Bold" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="135" />
+        <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged" Background="AliceBlue"
                     SelectedDate="{Binding Mode=OneWayToSource, Path=InputStartDate}"
-                    Background="LightBlue" Margin="242,1,0,0" FontSize="16" Height="29" HorizontalAlignment="Left" Width="142" VerticalAlignment="Top" />
-        <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged"
+                    Margin="198,3,0,0" FontSize="16" Height="35" HorizontalAlignment="Left" Width="126" VerticalAlignment="Top" />
+        <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged" Background="AliceBlue"
                     SelectedDate="{Binding Mode=OneWayToSource, Path=InputEndDate}"
-                    Background="LightBlue" Margin="431,0,0,0" FontSize="16" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="122" />
-        <TextBlock Text="С:" HorizontalAlignment="Left" Margin="223,7,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379" Width="30" Height="19"/>
-        <TextBlock Text="По:" Margin="401,7,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold" Width="25" HorizontalAlignment="Left" Height="19"/>
+                    Margin="392,3,0,0" FontSize="16" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Width="124" />
+        <TextBlock Text="С:" HorizontalAlignment="Left" Margin="176,10,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" RenderTransformOrigin="1,0.379" Width="22" Height="19"/>
+        <TextBlock Text="По:" Margin="362,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.6,2.769" FontSize="14" FontWeight="Bold" Width="25" HorizontalAlignment="Left" Height="19"/>
         <CheckBox x:Name="IsShowDetailed" Content="Показать&#xA;подробно" VerticalContentAlignment="Center" Cursor="Hand" 
                   IsChecked="{Binding Mode=OneWayToSource, Path=InputIsShowDetailed}"
-                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}" Margin="574,1,0,0" VerticalAlignment="Top" Height="28" FontSize="11" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Width="71" Foreground="White" Background="#FFCFCFCF" BorderBrush="Black"/>
-        <ProgressBar x:Name="Progress" HorizontalAlignment="Left" Margin="242,38,0,0" Width="560"
+                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}" Margin="538,0,0,0" VerticalAlignment="Top" Height="38" FontSize="11" RenderTransformOrigin="0.534,0.1" HorizontalAlignment="Left" Width="88"/>
+        <ProgressBar Panel.ZIndex="10" x:Name="Progress" HorizontalAlignment="Left" Margin="132,59,0,0" Width="504"
                      Value="{Binding Mode=OneWay, Path= LoadingStatus.Value}"
-                     Maximum="{Binding Mode=OneWay, Path=LoadingStatus.Maximum}" Background="#FF6C7B8D" Height="20" VerticalAlignment="Top"/>
-        <TabControl TabStripPlacement="Top" Margin="10,37,10,10" Grid.ColumnSpan="2">
+                     Maximum="{Binding Mode=OneWay, Path=LoadingStatus.Maximum}" Height="11" VerticalAlignment="Top"/>
+        <TabControl TabStripPlacement="Top" Margin="0,49,0,0">
             <TabItem>
                 <TabItem.Header>Таблица</TabItem.Header>
                 <DataGrid x:Name="DataGridRatesOutput" 
                           ItemsSource="{Binding Mode=OneWay, Path=GridSourse}"
-                          AutoGenerateColumns="False"  FontSize="14"
-                          RowBackground="LightBlue" AlternatingRowBackground="LightGoldenrodYellow">
+                          AutoGenerateColumns="False"  FontSize="14" >
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" Width="75" MinWidth="70"/>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date}" Width="*" MinWidth="70"/>
                         <DataGridTextColumn Header="Стоимость" Binding="{Binding Path=Price}" Width="*" MinWidth="70"/>
                         <DataGridTextColumn Header="Категория номера" Binding="{Binding Path=Category}" Width="3*" MinWidth="150"/>
                         <DataGridTextColumn Header="Питание" Binding="{Binding Path=Meal}" Width="2*" MinWidth="150"/>
@@ -63,45 +62,49 @@
                         <RowDefinition Height="219*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="38*"></ColumnDefinition>
+                        <ColumnDefinition Width="365*"/>
+                        <ColumnDefinition Width="403*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <lvc:CartesianChart Series="{Binding Path=ChartMinRate}"  
-                                        Grid.Row="0" Grid.ColumnSpan="2" Background="LightBlue"
+                                        Grid.Row="0" Grid.ColumnSpan="3" Background="LightBlue"
                                         LegendLocation="Bottom" Zoom="X">
                         <lvc:CartesianChart.AxisY>
                             <lvc:Axis Title="Минимальный доступный тариф" 
                                       MinValue="0" LabelFormatter="{Binding FormatterCost}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Date" Labels="{Binding Mode=OneWay, Path=ChartLabels}"></lvc:Axis>
+                            <lvc:Axis LabelFormatter="{Binding FormatterX}" 
+                                      Title="Date"></lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                     <lvc:CartesianChart Series="{Binding Path=ChartRatesCounter}"
                                         Grid.Row="1" Grid.Column="0" Background="LightGoldenrodYellow"
-                                        BorderBrush="WhiteSmoke" BorderThickness="4" Zoom="X">
+                                        BorderThickness="4" Zoom="X" Grid.ColumnSpan="2">
                         <lvc:CartesianChart.AxisY>
                             <lvc:Axis Title="Количество доступных категорий" Labels="0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
                                       MinValue="0" LabelFormatter="{Binding FormatterCounter}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis IsMerged="True" Title="Date" Labels="{Binding Mode=OneWay, Path=ChartLabels}"></lvc:Axis>
+                            <lvc:Axis LabelFormatter="{Binding FormatterX}"
+                                      IsMerged="True" Title="Date"></lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                     <lvc:CartesianChart Series="{Binding Path=ChartRateCountPercent}"
-                                        Grid.Row="1" Grid.Column="1" Background="LightSteelBlue"
-                                        BorderBrush="WhiteSmoke" BorderThickness="4" Zoom="X">
+                                        Grid.Row="1" Grid.Column="2" Background="LightSteelBlue"
+                                        BorderThickness="4" Zoom="X">
                         <lvc:CartesianChart.AxisY>
                             <lvc:Axis Title="Доступные категории от максимума" 
                                       MinValue="0" MaxValue="100" LabelFormatter="{Binding FormatterPercent}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis IsMerged="True" Title="Date" Labels="{Binding Mode=OneWay, Path=ChartLabels}"></lvc:Axis>
+                            <lvc:Axis LabelFormatter="{Binding FormatterX}" 
+                                      IsMerged="True" Title="Date"></lvc:Axis>
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                 </Grid>
             </TabItem>
         </TabControl>
-        <Button Command="{Binding ClearCommand}" Content="Очистить дашборд" Background="#FFFF3A00" HorizontalAlignment="Left" Margin="133,38,0,0" VerticalAlignment="Top" Width="109"/>
+        <Button Command="{Binding ClearCommand}" Content="Очистить дашборд"  HorizontalAlignment="Left" Margin="651,38,0,0" VerticalAlignment="Top" Width="161"/>
     </Grid>
 </Window>

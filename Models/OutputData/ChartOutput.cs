@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using LiveCharts;
 using LiveCharts.Wpf;
 
@@ -7,7 +9,6 @@ namespace RateShopperWPF.Models
 {
     class ChartLoader
     {
-        public Func<double, string> FormatterX { get; private set; }
         public LineSeries ChartMinRate { get; private set; }
         public LineSeries ChartRatesCounter { get; private set; }
         public LineSeries ChartRatesCounterPercent { get; private set; }
@@ -15,8 +16,6 @@ namespace RateShopperWPF.Models
 
         public ChartLoader(string parentLink)
         {
-            FormatterX = value => new DateTime((long)(value * TimeSpan.FromDays(1).Ticks)).ToString("d");
-            
             ChartMinRate = new LineSeries() 
             { 
                 Title = parentLink, 

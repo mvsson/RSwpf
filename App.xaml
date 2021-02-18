@@ -10,9 +10,9 @@
                 <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Size/m.xaml" /> 
                 <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/Weight/bold.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/LiveCharts.Wpf;component/Themes/base.xaml" />
-                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Cyan" SecondaryColor="Blue" />
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="DeepPurple" SecondaryColor="Red" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

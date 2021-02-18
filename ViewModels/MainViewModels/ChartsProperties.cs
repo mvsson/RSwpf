@@ -7,7 +7,7 @@ namespace RateShopperWPF.ViewModels
 {
     public partial class MainViewModel
     {
-        #region "Chart Properties"
+        #region "Charts Properties"
 
         private SeriesCollection _chartMinRate = new SeriesCollection(DayConfig);
         public SeriesCollection ChartMinRate
@@ -46,7 +46,10 @@ namespace RateShopperWPF.ViewModels
         public Func<double, string> FormatterCounter { get; } = value => value + " кат.";
         public Func<double, string> FormatterCost { get; } = value => value + " руб.";
         public Func<double, string> FormatterPercent { get; } = value => value + " %";
-        private Func<double, string> _formatterX;
+
+        private Func<double, string> _formatterX = value => value < 0.0 ?
+                        new DateTime(0).ToString("d") :
+                        new DateTime((long)(value * TimeSpan.FromDays(1).Ticks)).ToString("d");
         public Func<double, string> FormatterX
         {
             get => _formatterX;

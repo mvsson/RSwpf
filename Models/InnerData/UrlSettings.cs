@@ -30,6 +30,13 @@ namespace RateShopperWPF.Models
             string _url = $"https://www.booking.com/hotel/ru/{HotelLink}.html";
             return _url;
         }
+        /// <summary>
+        /// Возвращает массив объектов, хранящих готовые ссылки для парсинга
+        /// </summary>
+        /// <param name="startParse"></param>
+        /// <param name="endParse"></param>
+        /// <param name="link"></param>
+        /// <returns></returns>
         public static UrlOnDate[] GetUrlsList(DateTime startParse, DateTime endParse, string link)
         {
             UrlSettings hotelUrlSettings = new UrlSettings(link);
@@ -37,7 +44,7 @@ namespace RateShopperWPF.Models
             UrlOnDate[] urls = hotelUrlSettings._GetUrlsList(parsingDates);
             return urls;
         }
-        private UrlOnDate[] _GetUrlsList(in DateSettings range)
+        private UrlOnDate[] _GetUrlsList(DateSettings range)
         {
             string _url = GetHotelPage();
             List<UrlOnDate> result = new List<UrlOnDate>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -21,28 +22,32 @@ namespace RateShopperWPF.ViewModels
             {
                 if (_starterCommand == null)
                 {
-                    _starterCommand = new DelegateCommand(Starter_Click);
+                    _starterCommand = new DelegateCommand(StarterClick);
                 }
                 return _starterCommand;
             }
         }
-        private async void Starter_Click()
+        private async void StarterClick()
         {
             // Выключаем UI
             IsEnabledStarterButton = false;
             IsEnabledDetailedCheckbox = false;
+            LoadingStatus.Maximum = (InputEndDate - InputStartDate).TotalDays + 1;
 
             UrlOnDate[] urls = UrlSettings.GetUrlsList(InputStartDate, InputEndDate, InputLink);
             UrlOnDate[][] splitUrls = UrlSettings.SplitUrlsListByN(urls, lenght: 16);
 
-            LoadingStatus.Maximum = urls.Length + 1;
-
+            // Извлекаем максимальное возможное количество доступных категорий
             var urlPast6Month = UrlSettings.GetUrlsList(DateTime.Today.AddDays(180), DateTime.Today.AddDays(181), InputLink).First();
             var ratesPast6Month = await Parser.GetRatesListAsync(LoadingStatus, urlPast6Month);
             double maxRatesCount = ratesPast6Month.First().Rates.Where(rate => rate.Category != null).Count();
             if (maxRatesCount == 0)
+            {
+                SystemSounds.Exclamation.Play();
                 _ = Task.Run(() => MessageBox.Show("Максимальное количество категорий не определено.\n" +
                                                    "Процентное соотношение не будет отображено."));
+            }
+                
 
             IDataGridOutput printer = InputIsShowDetailed ? printer = new OutputDetailed() : new OutputShort();
             var chartLoader = new ChartLoader(InputLink);
@@ -59,18 +64,20 @@ namespace RateShopperWPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    await Task.Run(() => MessageBox.Show(ex.Message));
+                    SystemSounds.Exclamation.Play();
+                    _ = Task.Run(() => MessageBox.Show(ex.Message));
                 }
             }
 
+            // заполняем графики
             ChartMinRate.Add(chartLoader.ChartMinRate);
             ChartRatesCounter.Add(chartLoader.ChartRatesCounter);
             ChartRateCountPercent.Add(chartLoader.ChartRatesCounterPercent);
-            FormatterX = chartLoader.FormatterX;
 
             if (LoadingStatus.Value != LoadingStatus.Maximum)
                 _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
 
+            SystemSounds.Hand.Play();
             // включаем UI
             LoadingStatus.Value = 0;
             IsEnabledStarterButton = true;
@@ -78,6 +85,7 @@ namespace RateShopperWPF.ViewModels
         }
         #endregion
 
+        #region "Chart Commands"
         private DelegateCommand _clearCommand;
         public ICommand ClearCommand
         {
@@ -95,19 +103,15 @@ namespace RateShopperWPF.ViewModels
             ChartRatesCounter.Clear();
             ChartRateCountPercent.Clear();
             ChartMinRate.Clear();
-            MessageBox.Show("Теперь чисто");
+            SystemSounds.Exclamation.Play();
+            MessageBox.Show("НАЧАЛЬНИК, БЛЯДЬ! НАЧАЛЬНИК! ЭТОТ ПИДОРАС ОБОСРАЛСЯ, БЛЯ! НАЧАЛЬНИК! " +
+                            "Иди под струю, блядь, чтоб ща пришли, ты чистый был нахуй! ТЫ ПОНЯЛ БЛЯАААДЬ! " +
+                            "ЧТОБЫ ЧИСТЫЙ БЫЛ, СУКА! Обосрался, пидорас, а. НАЧАЛЬНИК, БЛЯДЬ, ЭТОТ ОБОСРАЛСЯ! " +
+                            "ИДИТЕ МОЙТЕ ЕГО НАХУЙ, Я С НИМ ЗДЕСЬ СИДЕТЬ НЕ БУДУ, БЛЯДЬ!");
         }
-        /*private void ResetZoomOnClick(object sender, RoutedEventArgs e)
-        {
-            //Use the axis MinValue/MaxValue properties to specify the values to display.
-            //use double.Nan to clear it.
-
-            X.MinValue = double.NaN;
-            X.MaxValue = double.NaN;
-            Y.MinValue = double.NaN;
-            Y.MaxValue = double.NaN;
-        }*/
+        
 
 
+        #endregion
     }
 }

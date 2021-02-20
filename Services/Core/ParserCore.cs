@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AngleSharp;
 using AngleSharp.Dom;
+using RateShopperWPF.Models.InputModels;
 
-namespace RateShopperWPF.Models
+namespace RateShopperWPF.Services.Core
 {
     /// <summary>
     /// Производит загрузку и обрабатывание DOM исходника страницы, получаемой из класса UrlSettings
     /// Выводит данные в класс RateData
     /// </summary>
-    static class Parser
+    class ParserCore
     {
         /// <summary>
         /// Создаёт массив "PriceByDay" и заполняет его с помощью .AsParsllel. Отображает процесс на прогрессбар.
@@ -21,7 +21,7 @@ namespace RateShopperWPF.Models
         /// <param name="progressBar"></param>
         /// <param name="urls"></param>
         /// <returns></returns>
-        public static async Task<DateRates[]> GetRatesListAsync(ProgressBar progressBar, params UrlOnDate[] urls)
+        public async Task<DateRates[]> GetRatesListAsync(ProgressBar progressBar, params UrlModel[] urls)
         {
             var pricesList = new DateRates[urls.Length];
 
@@ -40,10 +40,10 @@ namespace RateShopperWPF.Models
         /// <param name="document"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        private static DateRates GetRatesByDay(IDocument document, UrlOnDate url)
+        private DateRates GetRatesByDay(IDocument document, UrlModel url)
         {
             var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
-            DateRates result = new DateRates(url.BaseLink, url.Date);
+            DateRates result = new DateRates(url.ParentLink, url.Date);
             if (blocks.Count() == 0)
             {
                 result.WithoutAnyRate();
@@ -81,7 +81,7 @@ namespace RateShopperWPF.Models
         /// <param name="htmlteg"></param>
         /// <param name="htmlclass">Класс в теге</param>
         /// <returns></returns>
-        private static IEnumerable<IElement> GetParse<T>(in T source, string htmlteg, string htmlclass) where T : IParentNode
+        private IEnumerable<IElement> GetParse<T>(in T source, string htmlteg, string htmlclass) where T : IParentNode
         {
             IEnumerable<IElement> blocks = source.QuerySelectorAll(htmlteg).Where(item => item.ClassName != null && item.ClassName.Contains(htmlclass));
             return blocks;
@@ -91,7 +91,7 @@ namespace RateShopperWPF.Models
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private static async Task<IDocument> GetDomPageAsync(string url)
+        private async Task<IDocument> GetDomPageAsync(string url)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);

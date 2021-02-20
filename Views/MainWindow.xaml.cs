@@ -16,7 +16,6 @@ namespace RateShopperWPF.Views
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SetDatepickersSettings();
-            HotelLinkInput.ToolTip = "Вставьте относительный URL отеля с букинга,\nто что между 'booking.com/hotel/ru/' и '.html'";  
         }
         private void StartDateChanged(object sender, RoutedEventArgs e)
         {
@@ -49,6 +48,11 @@ namespace RateShopperWPF.Views
             StartDate.BlackoutDates.AddDatesInPast();
             var blackoutRange = new CalendarDateRange(DateTime.MinValue, StartDate.SelectedDate.Value);
             EndDate.BlackoutDates.Add(blackoutRange);
+        }
+        private void OpenSettingsClick(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
         }
         private void ResetZoomOnClick1(object sender, RoutedEventArgs e)
         {

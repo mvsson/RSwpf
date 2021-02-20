@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RateShopperWPF.Models
+namespace RateShopperWPF.Models.InputModels
 {
     /// <summary>
     /// Хранит в себе вывод RateLine'ов из класса Parser
     /// Далее из этого класса собирается вывод в ViewModel
     /// </summary>
+
     class DateRates
     {
-        public DateTime Date { get; }
-        public List<Rate> Rates { get; }
-        public string ParentLink { get; }
+        public readonly DateTime Date;
+        public readonly List<Rate> Rates;
+        public readonly string ParentLink;
         public DateRates(string link, DateTime date)
         {
             Rates = new List<Rate>();
@@ -21,15 +22,7 @@ namespace RateShopperWPF.Models
         }
         public void WithoutAnyRate()
         {
-            this.Rates.Add(new Rate { Price = "Нет доступных номеров" });
-        }
-        public GridRateRow[] GetGrid(IDataGridOutput printer)
-        {
-            return printer.GetGrid(this);
-        }
-        public static GridRateRow[] GetGrid(IDataGridOutput printer, DateRates[] days)
-        {
-            return printer.GetGrid(days);
+            Rates.Add(new Rate { Price = "Нет доступных номеров" });
         }
     }
     /// <summary>

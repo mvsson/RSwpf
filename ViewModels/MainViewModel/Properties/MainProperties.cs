@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Controls;
-using RateShopperWPF.Models;
 
-namespace RateShopperWPF.ViewModels
+namespace RateShopperWPF.ViewModels.MainVM
 {
     public partial class MainViewModel : INotifyPropertyChanged
     {
@@ -17,35 +15,9 @@ namespace RateShopperWPF.ViewModels
         #region "Input Properties"
 
         public string InputLink { get; set; } = "ra-nevskiy-44.ru";
-        public DateTime InputStartDate { private get; set; }
-        public DateTime InputEndDate { private get; set; }
+        public DateTime InputStartDate {  get; set; }
+        public DateTime InputEndDate {  get; set; }
         public bool InputIsShowDetailed { private get; set; }
-        #endregion
-
-
-        #region "Output Properties"
-
-        private static ObservableCollection<GridRateRow> _gridSourse = new ObservableCollection<GridRateRow>();
-        public ObservableCollection<GridRateRow> GridSourse
-        {
-            get => _gridSourse;
-            set
-            {
-                _gridSourse = value;
-                OnPropertyChanged(nameof(GridSourse));
-            }
-        }
-
-        private ProgressBar _pb = new ProgressBar();
-        public ProgressBar LoadingStatus
-        {
-            get => _pb;
-            set
-            {
-                _pb = value;
-                OnPropertyChanged(nameof(LoadingStatus));
-            }
-        }
         #endregion
 
 

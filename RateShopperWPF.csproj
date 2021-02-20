@@ -28,7 +28,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,13 +120,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\OutputData\ChartOutput.cs" />
-    <Compile Include="Models\OutputData\GridOutput.cs" />
-    <Compile Include="Models\InnerData\DateSettings.cs" />
-    <Compile Include="Models\Core\Parser.cs" />
-    <Compile Include="Models\InnerData\RateData.cs" />
-    <Compile Include="Models\InnerData\UrlSettings.cs" />
-    <Compile Include="ViewModels\SettingsVievModels\SettingsVM.cs" />
+    <Compile Include="Infrastructure\Commands\Base\Command.cs" />
+    <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
+    <Compile Include="Services\Core\DatesCreator.cs" />
+    <Compile Include="Services\Core\UrlsCreator.cs" />
+    <Compile Include="Services\VMLoaders\ChartLoader.cs" />
+    <Compile Include="Services\Core\ParserWorker.cs" />
+    <Compile Include="Models\OutputModels\ChartOutput.cs" />
+    <Compile Include="Services\VMLoaders\GridLoader.cs" />
+    <Compile Include="Models\OutputModels\GridOutput.cs" />
+    <Compile Include="Services\Core\ParserCore.cs" />
+    <Compile Include="Models\InputModels\DateRatesModel.cs" />
+    <Compile Include="Models\InputModels\UrlModel.cs" />
+    <Compile Include="ViewModels\UserSettings\UserSettings.cs" />
+    <Compile Include="ViewModels\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -138,9 +146,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\MainViewModels\ChartsProperties.cs" />
-    <Compile Include="ViewModels\MainViewModels\MainProperties.cs" />
-    <Compile Include="ViewModels\MainViewModels\Commands.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

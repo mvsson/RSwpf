@@ -1,9 +1,9 @@
 ﻿using System;
 using LiveCharts;
 using LiveCharts.Configurations;
-using RateShopperWPF.Models;
+using RateShopperWPF.Models.OutputModels;
 
-namespace RateShopperWPF.ViewModels
+namespace RateShopperWPF.ViewModels.MainVM
 {
     public partial class MainViewModel
     {

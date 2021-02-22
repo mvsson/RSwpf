@@ -17,6 +17,7 @@ namespace RateShopperWPF.Views
         }
         private void AcceptClick(object sender, RoutedEventArgs e)
         {
+            App.IOService.SaveData(App.UserSettings);
             Close();
         }
     }

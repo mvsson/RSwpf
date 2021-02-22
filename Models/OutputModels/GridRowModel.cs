@@ -3,17 +3,14 @@ using RateShopperWPF.Models.InputModels;
 
 namespace RateShopperWPF.Models.OutputModels
 {
-    /// <summary>
-    /// Хранит в себе значения для вывода рядов в таблицу View
-    /// </summary>
-    public struct GridRateRow
+    public struct GridRowModel
     {
         public DateTime Date { get; set; }
         public string Price { get; set; }
         public string Category { get; set; }
         public string Meal { get; set; }
         public string ParentLink { get; set; }
-        public GridRateRow(DateTime date, Rate priceLine, string link)
+        public GridRowModel(DateTime date, Rate priceLine, string link)
         {
             Date = date;//.ToString("yyyy.MM.dd");
             Price = priceLine.Price;

@@ -6,7 +6,6 @@ namespace RateShopperWPF.Models.InputModels
 {
     /// <summary>
     /// Хранит в себе вывод RateLine'ов из класса Parser
-    /// Далее из этого класса собирается вывод в ViewModel
     /// </summary>
 
     class DateRates
@@ -37,11 +36,12 @@ namespace RateShopperWPF.Models.InputModels
         public double GetPriceIntegerOrDefault()
         {
             string nums = "0123456789";
+            string letters = "абвгдеёжзийклмнопрстуфхцчшщьыъэюя.,";
             string res = string.Empty;
             double price;
             foreach (var ch in Price)
             {
-                if (".,".Contains(ch))
+                if (letters.Contains(ch))
                     break;
                 if (nums.Contains(ch))
                 {

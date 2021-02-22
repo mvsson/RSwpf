@@ -3,8 +3,8 @@ using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using RateShopperWPF.Models.InputModels;
+using RateShopperWPF.Models.OutputModels;
 
 namespace RateShopperWPF.Services.Core
 {
@@ -19,7 +19,7 @@ namespace RateShopperWPF.Services.Core
             Parser = new ParserCore();
         }
     
-        public async Task<double> GetMaxCountCategoriesAsync(ProgressBar loadingStatus)
+        public async Task<double> GetMaxCountCategoriesAsync(ProgressBarModel loadingStatus)
         {
             var urlPast6Month = UrlCreator.GetUrl(DateTime.Today.AddDays(180));
             var ratesPast6Month = await Parser.GetRatesListAsync(loadingStatus, urlPast6Month);
@@ -34,7 +34,7 @@ namespace RateShopperWPF.Services.Core
             return maxRatesCount;
         }
 
-        public async Task<DateRates[]> GetRatesDataAsync(ProgressBar loadingStatus, DateTime[] Dates)
+        public async Task<DateRates[]> GetRatesDataAsync(ProgressBarModel loadingStatus, DateTime[] Dates)
         {
             var urlsList = Dates.Select(date => UrlCreator.GetUrl(date)).ToArray();
             return await Parser.GetRatesListAsync(loadingStatus, urlsList);

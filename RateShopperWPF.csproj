@@ -87,8 +87,8 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <Reference Include="Prism, Version=8.0.0.1909, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Core.8.0.0.1909\lib\net47\Prism.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -122,13 +122,16 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
+    <Compile Include="Models\OutputModels\ProgressBarModel.cs" />
     <Compile Include="Services\Core\DatesCreator.cs" />
     <Compile Include="Services\Core\UrlsCreator.cs" />
-    <Compile Include="Services\VMLoaders\ChartLoader.cs" />
+    <Compile Include="Services\FileIO\FileIOService.cs" />
+    <Compile Include="Services\ParsingHandler.cs" />
+    <Compile Include="Services\OutputLogic\ChartLoader.cs" />
     <Compile Include="Services\Core\ParserWorker.cs" />
-    <Compile Include="Models\OutputModels\ChartOutput.cs" />
-    <Compile Include="Services\VMLoaders\GridLoader.cs" />
-    <Compile Include="Models\OutputModels\GridOutput.cs" />
+    <Compile Include="Models\OutputModels\ChartsModels.cs" />
+    <Compile Include="Services\OutputLogic\GridLoader.cs" />
+    <Compile Include="Models\OutputModels\GridRowModel.cs" />
     <Compile Include="Services\Core\ParserCore.cs" />
     <Compile Include="Models\InputModels\DateRatesModel.cs" />
     <Compile Include="Models\InputModels\UrlModel.cs" />

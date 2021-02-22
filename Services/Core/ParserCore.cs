@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using AngleSharp;
 using AngleSharp.Dom;
 using RateShopperWPF.Models.InputModels;
+using RateShopperWPF.Models.OutputModels;
 
 namespace RateShopperWPF.Services.Core
 {
@@ -21,7 +20,7 @@ namespace RateShopperWPF.Services.Core
         /// <param name="progressBar"></param>
         /// <param name="urls"></param>
         /// <returns></returns>
-        public async Task<DateRates[]> GetRatesListAsync(ProgressBar progressBar, params UrlModel[] urls)
+        public async Task<DateRates[]> GetRatesListAsync(ProgressBarModel progressBar, params UrlModel[] urls)
         {
             var pricesList = new DateRates[urls.Length];
 
@@ -30,7 +29,7 @@ namespace RateShopperWPF.Services.Core
                 {
                     var domDocument = await GetDomPageAsync(url.Link);
                     pricesList[index] = GetRatesByDay(domDocument, url);
-                    Application.Current.Dispatcher.Invoke(() => progressBar.Value += 1);
+                    progressBar.Value += 1;
                 }));
             return pricesList;
         }

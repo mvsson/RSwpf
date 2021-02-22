@@ -10,7 +10,7 @@
         x:Class="RateShopperWPF.Views.MainWindow"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="960" MinHeight="622" Width="902" Height="622">
+        Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="800" MinHeight="622" Width="850" Height="622">
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="MainVMSource"/>
     </Window.Resources>
@@ -20,20 +20,17 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" ItemHeight="40" HorizontalAlignment="Center">
-            <TextBox Padding="8" BorderThickness="1"
+            <TextBox Padding="8" BorderThickness="1" IsEnabled="{Binding Mode=TwoWay, Path=IsEnabledInputLink}"
                      ToolTip="Вставьте относительный URL отеля с букинга,\nто что между 'booking.com/hotel/ru/' и '.html'"
-                     Text="{Binding Mode=TwoWay, Path=InputLink}" FontSize="16" MaxLines="1" Width="170"/>
+                     Text="{Binding Mode=TwoWay, Path=ParentLink}" FontSize="16" MaxLines="1" Width="170"/>
             <TextBlock Padding="8" Text="С:"  FontSize="14" FontWeight="Bold" Width="35"/>
             <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged"
-                    SelectedDate="{Binding Mode=OneWayToSource, Path=InputStartDate}"
+                    SelectedDate="{Binding Mode=OneWayToSource, Path=StartDate}"
                     FontSize="16" Width="150" />
             <TextBlock Padding="8" Text="По:" FontSize="14" FontWeight="Bold" Width="40"/>
             <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged"
-                    SelectedDate="{Binding Mode=OneWayToSource, Path=InputEndDate}"
+                    SelectedDate="{Binding Mode=OneWayToSource, Path=EndDate}"
                     FontSize="16" Width="150" />
-            <CheckBox Margin="15,0,15,0" x:Name="IsShowDetailed" Content="Показать&#xA;подробно" Cursor="Hand" 
-                  IsChecked="{Binding Mode=OneWayToSource, Path=InputIsShowDetailed}"
-                  IsEnabled="{Binding Mode=OneWay, Path=IsEnabledDetailedCheckbox}" FontSize="11" Width="80"/>
             <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Показать" 
                     Command="{Binding Path=GetDataOnBoardCommand}" 
                     IsEnabled="{Binding Mode=OneWay, Path=IsEnabledStarterButton}"
@@ -119,6 +116,6 @@
         </TabControl>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Stretch"
                      Value="{Binding Mode=OneWay, Path= LoadingStatus.Value}"
-                     Maximum="{Binding Mode=OneWay, Path=LoadingStatus.Maximum}" Height="6" Grid.Row="1" VerticalAlignment="Bottom"/>
+                     Maximum="{Binding Mode=OneWay, Path=LoadingStatus.MaxValue}" Height="6" Grid.Row="1" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

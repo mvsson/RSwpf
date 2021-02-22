@@ -4,15 +4,14 @@ using System.Media;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using LiveCharts;
 using RateShopperWPF.Infrastructure.Commands;
 using RateShopperWPF.Models.OutputModels;
-using RateShopperWPF.Services.Core;
-using RateShopperWPF.Services.VMLoaders;
 using RateShopperWPF.ViewModels.Base;
 using LiveCharts.Configurations;
+using System.Collections.Generic;
+using RateShopperWPF.Services;
 
 namespace RateShopperWPF.ViewModels
 {
@@ -29,15 +28,14 @@ namespace RateShopperWPF.ViewModels
             GetDataOnBoardCommand = new LambdaCommand(OnGetDataOnBoardCommandExecuted, CanGetDataOnBoardCommandExecute);
             #endregion
 
-            var config = Mappers.Xy<DateModel>()
+            var config = Mappers.Xy<PointModel>()
                 .X(dateModel => dateModel.Date.Ticks / TimeSpan.FromDays(1).Ticks)
                 .Y(dateModel => dateModel.Value);
 
             ChartMinRate = new SeriesCollection(config);
             ChartRatesCounter = new SeriesCollection(config);
             ChartRateCountPercent = new SeriesCollection(config);
-            GridSourse = new ObservableCollection<GridRateRow>();
-            LoadingStatus = new ProgressBar();
+            GridSourse = new ObservableCollection<GridRowModel>();
         }
 
         #region "Commands"
@@ -71,55 +69,33 @@ namespace RateShopperWPF.ViewModels
         private bool CanGetDataOnBoardCommandExecute(object p) => true;
         private async void OnGetDataOnBoardCommandExecuted(object p)
         {
-            // Выключаем UI
             IsEnabledStarterButton = false;
-            IsEnabledDetailedCheckbox = false;
-            LoadingStatus.Maximum = (InputEndDate - InputStartDate).TotalDays + 1;
-            bool IsSoundOn = App.UserSettings.IsSoundOn;
-            
-            string inputLink = InputLink.Trim();
 
+            List<string> linkList = new List<string>();
+            if (App.UserSettings.IsUseList)
+                linkList.AddRange(App.UserSettings.ListLink.Where(item => item.IsSelected).Select(item => item.HotelLink));
+            else
+                linkList.Add(ParentLink.Trim());
 
-            DateTime[][] parsingDates = (new DatesCreator(InputStartDate, InputEndDate)).GetSplitDateList();
-            var parser = new ParserWorker(inputLink);
-
-            double maxCount = await parser.GetMaxCountCategoriesAsync(LoadingStatus);
-
-            var chartLoader = new ChartLoader(inputLink, App.UserSettings.IsShowChartLabels);
-
-            IGridLoader printer = InputIsShowDetailed ? printer = new GridLoaderDetailed() : new GridLoaderShort();
-            var gridLoader = new GridLoader(printer);
-
-            foreach (var dates in parsingDates)
+            LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1)*linkList.Count());
+            var handlerParser = new ParsingHandler(StartDate, EndDate);
+            foreach(var inputLink in linkList)
             {
-                try 
-                {
-                    var data = await parser.GetRatesDataAsync(LoadingStatus, dates);
-                    gridLoader.GetGrid(data).ToList().ForEach(item => GridSourse.Add(item));
-                    chartLoader.FillCharts(data, maxCount);
-                }
-                catch (Exception ex)
-                {
-                    if (IsSoundOn)
-                        SystemSounds.Exclamation.Play();
-                    _ = Task.Run(() => MessageBox.Show(ex.Message));
-                }
+                handlerParser.ParentLink = inputLink;
+                await handlerParser.ProcessAsync(LoadingStatus);
+
+                handlerParser.GridRows.ForEach(row => GridSourse.Add(row));
+                ChartMinRate.Add(handlerParser.Charts.ChartMinRate);
+                ChartRatesCounter.Add(handlerParser.Charts.ChartRatesCounter);
+                ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
             }
-            ChartMinRate.Add(chartLoader.Charts.ChartMinRate);
-            ChartRatesCounter.Add(chartLoader.Charts.ChartRatesCounter);
-            ChartRateCountPercent.Add(chartLoader.Charts.ChartRatesCounterPercent);
-
-
-            if (LoadingStatus.Value != LoadingStatus.Maximum)
+            if (LoadingStatus.Value != LoadingStatus.MaxValue)
                 _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
-
-            if (IsSoundOn)
+            if (App.UserSettings.IsSoundOn)
                 SystemSounds.Hand.Play();
-            // включаем UI
+            
             LoadingStatus.Value = 0;
             IsEnabledStarterButton = true;
-            IsEnabledDetailedCheckbox = true;
-
         }
         #endregion
 
@@ -157,8 +133,8 @@ namespace RateShopperWPF.ViewModels
 
         #region "Grid Properties"
 
-        private ObservableCollection<GridRateRow> _gridSourse;
-        public ObservableCollection<GridRateRow> GridSourse
+        private ObservableCollection<GridRowModel> _gridSourse;
+        public ObservableCollection<GridRowModel> GridSourse
         {
             get => _gridSourse;
             set => Set(ref _gridSourse, value);
@@ -167,13 +143,19 @@ namespace RateShopperWPF.ViewModels
 
         #region "Input Properties"
 
-        public string InputLink { get; set; } = "ra-nevskiy-44.ru";
-        public DateTime InputStartDate { private get; set; }
-        public DateTime InputEndDate { private get; set; }
-        public bool InputIsShowDetailed { private get; set; }
+        public string ParentLink { get; set; } = "ra-nevskiy-44.ru";
+        public DateTime StartDate { private get; set; }
+        public DateTime EndDate { private get; set; }
         #endregion
 
         #region "UI"
+
+        private bool _isEnabledInputLink = true;
+        public bool IsEnabledInputLink
+        {
+            get => _isEnabledInputLink;
+            set => Set(ref _isEnabledInputLink, value);
+        }
 
         private bool _isEnabledStarterButton = true;
         public bool IsEnabledStarterButton
@@ -181,14 +163,9 @@ namespace RateShopperWPF.ViewModels
             get => _isEnabledStarterButton;
             set => Set(ref _isEnabledStarterButton, value);
         }
-        private bool _isEnabledDetailedCheckbox = true;
-        public bool IsEnabledDetailedCheckbox
-        {
-            get => _isEnabledDetailedCheckbox;
-            set => Set(ref _isEnabledDetailedCheckbox, value);
-        }
-        private ProgressBar _loadingStatus;
-        public ProgressBar LoadingStatus
+
+        private ProgressBarModel _loadingStatus;
+        public ProgressBarModel LoadingStatus
         {
             get => _loadingStatus;
             set => Set(ref _loadingStatus, value);

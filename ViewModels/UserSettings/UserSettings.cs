@@ -3,16 +3,23 @@ using RateShopperWPF.ViewModels.Base;
 
 namespace RateShopperWPF.ViewModels.UserSettings
 {
-    public class GlobalSettings : ViewModelBase
+    public class UserSettings : ViewModelBase
     {
-        public GlobalSettings()
+        internal readonly MainWindowViewModel MainVM;
+        public UserSettings()
         {
-            IsShowChartLabels = true;
-            IsSoundOn = true;
             ListLink = new ObservableCollection<HotelLinkSetter>();
+            MainVM = new MainWindowViewModel();
         }
 
         #region "Global Settings"
+        private bool _isShowGridDetailed;
+        public bool IsShowGridDetailed
+        {
+            get => _isShowGridDetailed;
+            set => Set(ref _isShowGridDetailed, value);
+        }
+
         private bool _isShowChartLabels;
         public bool IsShowChartLabels
         {
@@ -27,16 +34,9 @@ namespace RateShopperWPF.ViewModels.UserSettings
             set
             {
                 Set(ref _isUseList, value);
-                IsEnabledTextBox = !value;
+                MainVM.IsEnabledInputLink = !value;
+                OnPropertyChanged("IsEnabledInputLink");
             }
-
-        }
-
-        private bool _isEnabledTextBox;
-        public bool IsEnabledTextBox
-        {
-            get => !IsUseList;
-            set => Set(ref _isEnabledTextBox, value);
         }
 
         private bool _isSoundOn = true;

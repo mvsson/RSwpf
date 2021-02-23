@@ -150,13 +150,6 @@ namespace RateShopperWPF.ViewModels
 
         #region "UI"
 
-        private bool _isEnabledInputLink = true;
-        public bool IsEnabledInputLink
-        {
-            get => _isEnabledInputLink;
-            set => Set(ref _isEnabledInputLink, value);
-        }
-
         private bool _isEnabledStarterButton = true;
         public bool IsEnabledStarterButton
         {

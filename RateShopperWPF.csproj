@@ -28,7 +28,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationRevision>16</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -135,7 +135,8 @@
     <Compile Include="Services\Core\ParserCore.cs" />
     <Compile Include="Models\InputModels\DateRatesModel.cs" />
     <Compile Include="Models\InputModels\UrlModel.cs" />
-    <Compile Include="ViewModels\UserSettings\UserSettings.cs" />
+    <Compile Include="Models\InputModels\HotelLinkSetter.cs" />
+    <Compile Include="ViewModels\UserSettings\UserSettingsViewModel.cs" />
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">

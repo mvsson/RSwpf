@@ -11,11 +11,7 @@ namespace RateShopperWPF.Views
         {
             InitializeComponent();
         }
-        private void DeclineClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-        private void AcceptClick(object sender, RoutedEventArgs e)
+        private void SaveSettingsClick(object sender, RoutedEventArgs e)
         {
             App.IOService.SaveData(App.UserSettings);
             Close();

@@ -12,9 +12,6 @@ namespace RateShopperWPF.Views
         public MainWindow()
         {
             InitializeComponent();
-        }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
             SetDatepickersSettings();
         }
         private void StartDateChanged(object sender, RoutedEventArgs e)

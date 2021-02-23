@@ -11,7 +11,7 @@ namespace RateShopperWPF
     /// </summary>
     public partial class App : Application
     {
-        public static readonly UserSettings UserSettings;
+        public static readonly UserSettingsViewModel UserSettings;
         internal static readonly FileIOService IOService;
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -25,7 +25,7 @@ namespace RateShopperWPF
             UserSettings = IOService.LoadSettings();
             if (UserSettings == null)
             {
-                UserSettings = new UserSettings();
+                UserSettings = new UserSettingsViewModel();
                 IOService.SaveData(UserSettings);
             }
         }

@@ -17,22 +17,22 @@
                       Content="Включить звук"/>
             <CheckBox DockPanel.Dock="Top" Margin="10" IsChecked="{Binding Path=IsShowChartLabels, Mode=TwoWay}" Cursor="Hand"
                       Content="Отображать значения в графиках"/>
-            <CheckBox DockPanel.Dock="Top" Margin="10" x:Name="IsShowDetailed" Content="Отображать все доступные тарифы в таблице" Cursor="Hand" 
+            <CheckBox DockPanel.Dock="Top" Margin="10" Content="Отображать все доступные тарифы в таблице" Cursor="Hand" 
                       IsChecked="{Binding Mode=TwoWay, Path=IsShowGridDetailed}"/>
-            <CheckBox DockPanel.Dock="Top" Margin="10" IsChecked="{Binding Path=IsUseList, Mode=TwoWay}" Cursor="Hand"
+            <CheckBox x:Name="IsUseInputList" DockPanel.Dock="Top" Margin="10" IsChecked="{Binding Path=IsUseList, Mode=TwoWay}" Cursor="Hand"
                       Content="Использовать список отелей, вместо строки"/>
-            <DataGrid IsEnabled="{Binding Mode=TwoWay, Path=IsUseList}" DockPanel.Dock="Top" HeadersVisibility="Column" VerticalAlignment="Stretch" ItemsSource="{Binding Mode=TwoWay, Path=ListLink}" AutoGenerateColumns="False">
+            <DataGrid x:Name="InputList" IsEnabled="{Binding Mode=TwoWay, Path=IsUseList}" DockPanel.Dock="Top" HeadersVisibility="Column" VerticalAlignment="Stretch" ItemsSource="{Binding Mode=TwoWay, Path=ListLink}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Width="100" Header="Selected" Binding="{Binding Path=IsSelected}"></DataGridCheckBoxColumn>
                     <DataGridTextColumn Width="*" Header="HotelLink" Binding="{Binding Path=HotelLink}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-        <WrapPanel HorizontalAlignment="Center" Grid.Row="1" Margin="66,0,65,0" Width="240">
-            <Button Content="Принять" Style="{StaticResource   MaterialDesignRaisedButton}" Width="110" HorizontalAlignment="Stretch"
-                    Click="AcceptClick"/>
-            <Button Content="Отклонить" Style="{StaticResource  MaterialDesignRaisedAccentButton}" Width="110" Margin="10,0" HorizontalAlignment="Stretch" 
-                    Click="DeclineClick"/>
+        <WrapPanel HorizontalAlignment="Center" Grid.Row="1">
+            <Button Content="Сохранить настройки" Style="{StaticResource   MaterialDesignRaisedButton}" HorizontalAlignment="Stretch"
+                    Click="SaveSettingsClick"/>
+            <Button Command="{Binding Path=CloseSettingsCommand}" Content="Отмена" Margin="20, 0" IsCancel="True" 
+                    Style="{StaticResource  MaterialDesignRaisedAccentButton}"  HorizontalAlignment="Stretch"/>
         </WrapPanel>
 
 

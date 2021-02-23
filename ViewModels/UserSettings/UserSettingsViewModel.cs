@@ -1,16 +1,18 @@
 ﻿using System.Collections.ObjectModel;
+using RateShopperWPF.Models.InputModels;
 using RateShopperWPF.ViewModels.Base;
 
 namespace RateShopperWPF.ViewModels.UserSettings
 {
-    public class UserSettings : ViewModelBase
+    public class UserSettingsViewModel : ViewModelBase
     {
         internal readonly MainWindowViewModel MainVM;
-        public UserSettings()
+        public UserSettingsViewModel()
         {
             ListLink = new ObservableCollection<HotelLinkSetter>();
             MainVM = new MainWindowViewModel();
         }
+
 
         #region "Global Settings"
         private bool _isShowGridDetailed;
@@ -34,10 +36,16 @@ namespace RateShopperWPF.ViewModels.UserSettings
             set
             {
                 Set(ref _isUseList, value);
-                MainVM.IsEnabledInputLink = !value;
-                OnPropertyChanged("IsEnabledInputLink");
+                IsEnabledInputLink = _isUseList == true ? false : true ;
             }
         }
+        private bool _isEnabledInputLink = true;
+        public bool IsEnabledInputLink
+        {
+            get => _isEnabledInputLink;
+            set => Set(ref _isEnabledInputLink, value);
+        }
+
 
         private bool _isSoundOn = true;
         public bool IsSoundOn
@@ -53,11 +61,5 @@ namespace RateShopperWPF.ViewModels.UserSettings
             set => Set(ref _listLink, value);
         }
         #endregion
-    }
-
-    public class HotelLinkSetter  //модель
-    {
-        public bool IsSelected { get; set; } = true;
-        public string HotelLink { get; set; }
     }
 }

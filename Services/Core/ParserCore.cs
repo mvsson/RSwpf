@@ -27,10 +27,10 @@ namespace RateShopperWPF.Services.Core
             await Task.WhenAll(
                 urls.AsParallel().Select(async (url, index) =>
                 {
-                    var domDocument = await GetDomPageAsync(url.Link).ConfigureAwait(false);
+                    var domDocument = await GetDomPageAsync(url.Link);
                     pricesList[index] = GetRatesByDay(domDocument, url);
                     progressBar.Value += 1;
-                })).ConfigureAwait(false);
+                }));
             return pricesList;
         }
         /// <summary>

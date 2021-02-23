@@ -10,6 +10,4 @@ namespace RateShopperWPF.Services.MessageBoxService
     {
         //bool ShowMessage(string text, string caption, MessageType messageType);
     }
-    
-
 }

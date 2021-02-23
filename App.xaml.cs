@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
-using RateShopperWPF.Services.FileIO;
+using RateShopperWPF.Services.FileIOService;
+using RateShopperWPF.ViewModels;
 using RateShopperWPF.ViewModels.UserSettings;
 using RateShopperWPF.Views;
 
@@ -16,7 +17,7 @@ namespace RateShopperWPF
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            new MainWindow() { DataContext = UserSettings.MainVM }.Show();
+            new MainWindow() { DataContext = new MainWindowViewModel() }.Show();
         }
 
         static App ()

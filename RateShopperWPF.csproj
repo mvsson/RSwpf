@@ -121,14 +121,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
+    <Compile Include="Infrastructure\Commands\AsyncCommand.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
+    <Compile Include="Infrastructure\TaskUtilities\TaskUtilities.cs" />
     <Compile Include="Models\OutputModels\ProgressBarModel.cs" />
     <Compile Include="Services\Core\DatesCreator.cs" />
     <Compile Include="Services\Core\UrlsCreator.cs" />
-    <Compile Include="Services\FileIO\FileIOService.cs" />
+    <Compile Include="Services\FileIOService\FileIOService.cs" />
+    <Compile Include="Services\MessageBoxService\MessageBoxService.cs" />
     <Compile Include="Services\ParsingHandler.cs" />
     <Compile Include="Services\OutputLogic\ChartLoader.cs" />
-    <Compile Include="Services\Core\ParserWorker.cs" />
+    <Compile Include="Services\Core\ParsingService.cs" />
     <Compile Include="Models\OutputModels\ChartsModels.cs" />
     <Compile Include="Services\OutputLogic\GridLoader.cs" />
     <Compile Include="Models\OutputModels\GridRowModel.cs" />

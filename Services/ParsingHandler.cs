@@ -41,7 +41,7 @@ namespace RateShopperWPF.Services
         public async Task ProcessAsync(ProgressBarModel progressBar)
         {
             DateTime[][] parsingDates = (new DatesCreator(StartDate, EndDate)).GetSplitDateList();
-            var parser = new ParserWorker(ParentLink);
+            var parser = new ParsingService(ParentLink);
 
             double maxCountCategory = await parser.GetMaxCountCategoriesAsync(progressBar);
 

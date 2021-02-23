@@ -6,11 +6,9 @@ namespace RateShopperWPF.ViewModels.UserSettings
 {
     public class UserSettingsViewModel : ViewModelBase
     {
-        internal readonly MainWindowViewModel MainVM;
         public UserSettingsViewModel()
         {
             ListLink = new ObservableCollection<HotelLinkSetter>();
-            MainVM = new MainWindowViewModel();
         }
 
 

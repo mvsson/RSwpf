@@ -8,12 +8,12 @@ using RateShopperWPF.Models.OutputModels;
 
 namespace RateShopperWPF.Services.Core
 {
-    class ParserWorker
+    class ParsingService
     {   
         private readonly UrlsCreator UrlCreator;
         private readonly ParserCore Parser;
 
-        public ParserWorker(string inputLink)
+        public ParsingService(string inputLink)
         {
             UrlCreator = new UrlsCreator(inputLink);
             Parser = new ParserCore();

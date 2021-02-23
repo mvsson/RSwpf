@@ -17,6 +17,7 @@ namespace RateShopperWPF.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
+        
         public MainWindowViewModel()
         {
             #region Commands
@@ -25,7 +26,7 @@ namespace RateShopperWPF.ViewModels
 
             ClearChartsCommand = new LambdaCommand(OnClearChartsCommandExecuted, CanClearChartsCommandExecute);
 
-            GetDataOnBoardCommand = new LambdaCommand(OnGetDataOnBoardCommandExecuted, CanGetDataOnBoardCommandExecute);
+            GetDataOnBoardCommand = new AsyncCommand<object>(OnGetDataOnBoardCommandExecuted, CanGetDataOnBoardCommandExecute);
             #endregion
 
             var config = Mappers.Xy<PointModel>()
@@ -38,9 +39,10 @@ namespace RateShopperWPF.ViewModels
             GridSourse = new ObservableCollection<GridRowModel>();
         }
 
+
         #region "Commands"
 
-        #region CloseAppCommand
+        #region Close App Command
         public ICommand CloseApplicationCommand { get; }
         private bool CanCloseApplicationCommandExecute(object p) => true;
         private void OnCloseApplicationCommandExecuted(object p)
@@ -49,7 +51,7 @@ namespace RateShopperWPF.ViewModels
         }
         #endregion
 
-        #region "Chart Clear"
+        #region "Chart Clear Command"
         public ICommand ClearChartsCommand { get; }
         private bool CanClearChartsCommandExecute(object p) => true;
         private void OnClearChartsCommandExecuted(object p)
@@ -63,43 +65,70 @@ namespace RateShopperWPF.ViewModels
 
         #endregion
 
-        #region "GetDataOnBoard"
+        #region "Get Data On Board AsyncCommand"
 
-        public ICommand GetDataOnBoardCommand { get; }
-        private bool CanGetDataOnBoardCommandExecute(object p) => true;
-        private async void OnGetDataOnBoardCommandExecuted(object p)
+        #region "Is Busy Async Context"
+        private bool _isBusy;
+        public bool IsBusy
         {
-            IsEnabledStarterButton = false;
-
-            List<string> linkList = new List<string>();
-            if (App.UserSettings.IsUseList)
-                linkList.AddRange(App.UserSettings.ListLink.Where(item => item.IsSelected).Select(item => item.HotelLink));
-            else
-                linkList.Add(ParentLink.Trim());
-
-            LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1)*linkList.Count());
-            var handlerParser = new ParsingHandler(StartDate, EndDate);
-            foreach(var inputLink in linkList)
-            {
-                handlerParser.ParentLink = inputLink;
-                await handlerParser.ProcessAsync(LoadingStatus);
-
-                handlerParser.GridRows.ForEach(row => GridSourse.Add(row));
-                ChartMinRate.Add(handlerParser.Charts.ChartMinRate);
-                ChartRatesCounter.Add(handlerParser.Charts.ChartRatesCounter);
-                ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
-            }
-            if (LoadingStatus.Value != LoadingStatus.MaxValue)
-                _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
-            if (App.UserSettings.IsSoundOn)
-                SystemSounds.Hand.Play();
-            
-            LoadingStatus.Value = 0;
-            IsEnabledStarterButton = true;
+            get => _isBusy;
+            private set => Set(ref _isBusy, value);
         }
         #endregion
+        public ICommand GetDataOnBoardCommand { get; }
+        private bool CanGetDataOnBoardCommandExecute(object p) => !IsBusy;
+        private async Task OnGetDataOnBoardCommandExecuted(object p)
+        {
+            try
+            {
+                IsBusy = true;
+                IsEnabledStarterButton = false;
 
+                List<string> parsingLinks = App.UserSettings.IsUseList ? GetParsingLinksFromSettings() : GetParsingLinkFromMainWindow();
+
+                LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1) * parsingLinks.Count());
+                var handlerParser = new ParsingHandler(StartDate, EndDate);
+
+                foreach (var link in parsingLinks)
+                {
+                    handlerParser.ParentLink = link;
+                    await handlerParser.ProcessAsync(LoadingStatus);
+
+                    handlerParser.GridRows.ForEach(row => GridSourse.Add(row));
+                    ChartMinRate.Add(handlerParser.Charts.ChartMinRate);
+                    ChartRatesCounter.Add(handlerParser.Charts.ChartRatesCounter);
+                    ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
+                }
+                if (LoadingStatus.Value != LoadingStatus.MaxValue)
+                    _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
+                if (App.UserSettings.IsSoundOn)
+                    SystemSounds.Hand.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                LoadingStatus.Value = 0;
+                IsEnabledStarterButton = true;
+                IsBusy = false;
+            }
+        }
+        #region "GetParsingLinks Method"
+        private List<string> GetParsingLinksFromSettings()
+        {
+            return (App.UserSettings.ListLink.Where(item => item.IsSelected)
+                            .Select(item => item.HotelLink.Trim())).ToList();
+        }
+        private List<string> GetParsingLinkFromMainWindow()
+        {
+            return new List<string> { ParentLink.Trim() };
+        }
         #endregion
+        #endregion "Get Data On Board Command"
+
+        #endregion "Commands"
 
 
         #region "Charts Properties"

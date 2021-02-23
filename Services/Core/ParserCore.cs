@@ -27,10 +27,10 @@ namespace RateShopperWPF.Services.Core
             await Task.WhenAll(
                 urls.AsParallel().Select(async (url, index) =>
                 {
-                    var domDocument = await GetDomPageAsync(url.Link);
+                    var domDocument = await GetDomPageAsync(url.Link).ConfigureAwait(false);
                     pricesList[index] = GetRatesByDay(domDocument, url);
                     progressBar.Value += 1;
-                }));
+                })).ConfigureAwait(false);
             return pricesList;
         }
         /// <summary>
@@ -94,7 +94,7 @@ namespace RateShopperWPF.Services.Core
         {
             var config = Configuration.Default.WithDefaultLoader();
             var context = BrowsingContext.New(config);
-            var document = await context.OpenAsync(url);
+            var document = await context.OpenAsync(url).ConfigureAwait(false);
             return document;
         }
     }

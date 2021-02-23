@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using RateShopperWPF.Models.InputModels;
 using RateShopperWPF.ViewModels.UserSettings;
 
-namespace RateShopperWPF.Services.FileIO
+namespace RateShopperWPF.Services.FileIOService
 {
     internal class FileIOService
     {

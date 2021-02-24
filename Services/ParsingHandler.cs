@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Media;
 using System.Threading.Tasks;
-using System.Windows;
 using RateShopperWPF.Models.OutputModels;
 using RateShopperWPF.Services.Core;
 using RateShopperWPF.Services.OutputLogic;
@@ -34,20 +33,20 @@ namespace RateShopperWPF.Services
         #endregion
 
         #region Services
-        private readonly IPopUpMessageService PopUpService;
+        private readonly IPopUpMessageSender PopUpSender;
         #endregion
 
-        public ParsingHandler(DateTime startDate, DateTime endDate, IPopUpMessageService popUpService = null)
+        public ParsingHandler(DateTime startDate, DateTime endDate, IPopUpMessageSender popUpSender = null)
         {
             StartDate = startDate;
             EndDate = endDate;
-            PopUpService = popUpService;
+            PopUpSender = popUpSender;
         }
 
         public async Task ProcessAsync(ProgressBarModel progressBar)
         {
             DateTime[][] parsingDates = (new DatesCreator(StartDate, EndDate)).GetSplitDateList();
-            var parser = new ParsingService(ParentLink);
+            var parser = new ParsingService(ParentLink, PopUpSender);
 
             double maxCountCategory = await parser.GetMaxCountCategoriesAsync(progressBar);
 
@@ -71,7 +70,7 @@ namespace RateShopperWPF.Services
                 {
                     if (App.UserSettings.IsSoundOn)
                         SystemSounds.Exclamation.Play();
-                    _ = Task.Run(() => PopUpService?.ShowMessage(ex.Message, ex.Source));
+                    _ = Task.Run(() => PopUpSender?.ShowMessage(ex.Message, ex.Source));
                 }
             }
         }

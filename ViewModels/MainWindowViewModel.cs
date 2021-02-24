@@ -39,13 +39,13 @@ namespace RateShopperWPF.ViewModels
             EndDate = DateTime.Today.AddDays(14);
             #endregion
         }
-        public MainWindowViewModel(IPopUpMessageService popUpService) : this ()
+        public MainWindowViewModel(IPopUpMessageSender popUpService) : this ()
         {
-            PopUpService = popUpService;
+            PopUpSender = popUpService;
         }
         #endregion
 
-        private readonly IPopUpMessageService PopUpService;
+        private readonly IPopUpMessageSender PopUpSender;
 
         #region "Commands"
 
@@ -84,7 +84,7 @@ namespace RateShopperWPF.ViewModels
                 List<string> parsingLinks = App.UserSettings.IsUseList ? GetParsingLinksFromSettings() : GetParsingLinkFromMainWindow();
 
                 LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1) * parsingLinks.Count());
-                var handlerParser = new ParsingHandler(StartDate, EndDate, PopUpService);
+                var handlerParser = new ParsingHandler(StartDate, EndDate, PopUpSender);
 
                 foreach (var link in parsingLinks)
                 {
@@ -97,13 +97,13 @@ namespace RateShopperWPF.ViewModels
                     ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
                 }
                 if (LoadingStatus.Value != LoadingStatus.MaxValue)
-                    _ = Task.Run(() => PopUpService?.ShowMessage("Таки где-то была ошибка в выгрузке данных, будь бдителен."));
+                    _ = Task.Run(() => PopUpSender?.ShowMessage("Таки где-то была ошибка в выгрузке данных, будь бдителен."));
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Hand.Play();
             }
             catch (Exception ex)
             {
-                PopUpService?.ShowMessage(ex.Message, ex.Source);
+                PopUpSender?.ShowMessage(ex.Message, ex.Source);
             }
             finally
             {

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
-using System.Windows;
 using RateShopperWPF.Models.InputModels;
 using RateShopperWPF.Models.OutputModels;
+using RateShopperWPF.Services.PopUpMessageService;
 
 namespace RateShopperWPF.Services.Core
 {
@@ -12,11 +12,15 @@ namespace RateShopperWPF.Services.Core
     {   
         private readonly UrlsCreator UrlCreator;
         private readonly ParserCore Parser;
+        #region Services
+        private readonly IPopUpMessageSender PopUpSender;
+        #endregion
 
-        public ParsingService(string inputLink)
+        public ParsingService(string inputLink, IPopUpMessageSender popUpSender = null)
         {
             UrlCreator = new UrlsCreator(inputLink);
             Parser = new ParserCore();
+            PopUpSender = popUpSender;
         }
     
         public async Task<double> GetMaxCountCategoriesAsync(ProgressBarModel loadingStatus)
@@ -28,7 +32,7 @@ namespace RateShopperWPF.Services.Core
             {
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Exclamation.Play();
-                _ = Task.Run(() => MessageBox.Show("Максимальное количество категорий не определено.\n" +
+                _ = Task.Run(() => PopUpSender?.ShowMessage("Максимальное количество категорий не определено.\n" +
                                                            "Процентное соотношение не будет отображено."));
             }
             return maxRatesCount;

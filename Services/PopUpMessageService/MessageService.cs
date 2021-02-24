@@ -3,13 +3,13 @@ using System.Windows;
 
 namespace RateShopperWPF.Services.PopUpMessageService
 {
-    interface IPopUpMessageService
+    interface IPopUpMessageSender
     {
         void ShowMessage(string text, string caption);
         void ShowMessage(string text);
     }
 
-    class PopUpMessageBox : IPopUpMessageService
+    class PopUpMessageBoxSender : IPopUpMessageSender
     {
         public void ShowMessage(string text, string caption)
         {

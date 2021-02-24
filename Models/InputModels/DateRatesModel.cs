@@ -7,7 +7,6 @@ namespace RateShopperWPF.Models.InputModels
     /// <summary>
     /// Хранит в себе вывод RateLine'ов из класса Parser
     /// </summary>
-
     class DateRates
     {
         public readonly DateTime Date;

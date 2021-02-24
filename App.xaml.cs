@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using RateShopperWPF.Services.FileIOService;
+using RateShopperWPF.Services.PopUpMessageService;
 using RateShopperWPF.ViewModels;
 using RateShopperWPF.ViewModels.UserSettings;
 using RateShopperWPF.Views;
@@ -17,7 +18,10 @@ namespace RateShopperWPF
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            new MainWindow() { DataContext = new MainWindowViewModel() }.Show();
+            new MainWindow() 
+            { 
+                DataContext = new MainWindowViewModel (new PopUpMessageBox()) 
+            }.Show();
         }
 
         static App ()

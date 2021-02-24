@@ -6,6 +6,7 @@ using System.Windows;
 using RateShopperWPF.Models.OutputModels;
 using RateShopperWPF.Services.Core;
 using RateShopperWPF.Services.OutputLogic;
+using RateShopperWPF.Services.PopUpMessageService;
 
 namespace RateShopperWPF.Services
 {
@@ -32,10 +33,15 @@ namespace RateShopperWPF.Services
         public ChartsModel Charts { get; private set; }
         #endregion
 
-        public ParsingHandler(DateTime startDate, DateTime endDate)
+        #region Services
+        private readonly IPopUpMessageService PopUpService;
+        #endregion
+
+        public ParsingHandler(DateTime startDate, DateTime endDate, IPopUpMessageService popUpService = null)
         {
             StartDate = startDate;
             EndDate = endDate;
+            PopUpService = popUpService;
         }
 
         public async Task ProcessAsync(ProgressBarModel progressBar)
@@ -65,7 +71,7 @@ namespace RateShopperWPF.Services
                 {
                     if (App.UserSettings.IsSoundOn)
                         SystemSounds.Exclamation.Play();
-                    _ = Task.Run(() => MessageBox.Show(ex.Message));
+                    _ = Task.Run(() => PopUpService?.ShowMessage(ex.Message, ex.Source));
                 }
             }
         }

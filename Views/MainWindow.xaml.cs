@@ -12,38 +12,18 @@ namespace RateShopperWPF.Views
         public MainWindow()
         {
             InitializeComponent();
-            SetDatepickersSettings();
+            SetDatepickersBlackout();
         }
         private void StartDateChanged(object sender, RoutedEventArgs e)
         {
-            if (StartDate.SelectedDate == null)
-            {
-                StartDate.SelectedDate = DateTime.Today;
-            }
-            else if (EndDate == null || EndDate.SelectedDate <= StartDate.SelectedDate.Value.AddDays(1))
-            {
-                if (EndDate == null)
-                    EndDate = new DatePicker();
-                EndDate.SelectedDate = StartDate.SelectedDate.Value.AddDays(1);
-            }
             var blackoutRange = new CalendarDateRange(DateTime.MinValue, StartDate.SelectedDate.Value);
             EndDate.BlackoutDates.Clear();
             EndDate.BlackoutDates.Add(blackoutRange);
         }
-        private void EndDateChanged(object sender, RoutedEventArgs e)
+        private void SetDatepickersBlackout()
         {
-            if (EndDate.SelectedDate == null)
-            {
-                EndDate.SelectedDate = StartDate.SelectedDate.Value.AddDays(1);
-            }
-        }
-        private void SetDatepickersSettings()
-        {
-            StartDate.SelectedDate = DateTime.Today;
-            EndDate.SelectedDate = DateTime.Today.AddDays(14); 
-
             StartDate.BlackoutDates.AddDatesInPast();
-            var blackoutRange = new CalendarDateRange(DateTime.MinValue, StartDate.SelectedDate.Value);
+            var blackoutRange = new CalendarDateRange(DateTime.MinValue, DateTime.Today);
             EndDate.BlackoutDates.Add(blackoutRange);
         }
         private void OpenSettingsClick(object sender, RoutedEventArgs e)

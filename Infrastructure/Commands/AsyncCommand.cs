@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using RateShopperWPF.Infrastructure.TaskUtilities;
@@ -79,7 +78,6 @@ namespace RateShopperWPF.Infrastructure.Commands
         #endregion
     }
 
-
     public class AsyncCommand<T> : IAsyncCommand<T>
     {
         public event EventHandler CanExecuteChanged;
@@ -136,6 +134,4 @@ namespace RateShopperWPF.Infrastructure.Commands
         }
         #endregion
     }
-
-
 }

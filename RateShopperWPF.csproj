@@ -128,7 +128,7 @@
     <Compile Include="Services\Core\DatesCreator.cs" />
     <Compile Include="Services\Core\UrlsCreator.cs" />
     <Compile Include="Services\FileIOService\FileIOService.cs" />
-    <Compile Include="Services\MessageBoxService\MessageBoxService.cs" />
+    <Compile Include="Services\PopUpMessageService\MessageService.cs" />
     <Compile Include="Services\ParsingHandler.cs" />
     <Compile Include="Services\OutputLogic\ChartLoader.cs" />
     <Compile Include="Services\Core\ParsingService.cs" />

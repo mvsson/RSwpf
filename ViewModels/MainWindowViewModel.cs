@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Media;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using LiveCharts;
 using RateShopperWPF.Infrastructure.Commands;
@@ -12,44 +11,43 @@ using RateShopperWPF.ViewModels.Base;
 using LiveCharts.Configurations;
 using System.Collections.Generic;
 using RateShopperWPF.Services;
+using RateShopperWPF.Services.PopUpMessageService;
 
 namespace RateShopperWPF.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        
+        #region Ctor
         public MainWindowViewModel()
         {
             #region Commands
-
-            CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommandExecute);
 
             ClearChartsCommand = new LambdaCommand(OnClearChartsCommandExecuted, CanClearChartsCommandExecute);
 
             GetDataOnBoardCommand = new AsyncCommand<object>(OnGetDataOnBoardCommandExecuted, CanGetDataOnBoardCommandExecute);
             #endregion
 
+            #region Initialize prop
             var config = Mappers.Xy<PointModel>()
                 .X(dateModel => dateModel.Date.Ticks / TimeSpan.FromDays(1).Ticks)
-                .Y(dateModel => dateModel.Value);
-
+                .Y(dateModel => dateModel.Value);            
             ChartMinRate = new SeriesCollection(config);
             ChartRatesCounter = new SeriesCollection(config);
             ChartRateCountPercent = new SeriesCollection(config);
             GridSourse = new ObservableCollection<GridRowModel>();
+            StartDate = DateTime.Today;
+            EndDate = DateTime.Today.AddDays(14);
+            #endregion
         }
-
-
-        #region "Commands"
-
-        #region Close App Command
-        public ICommand CloseApplicationCommand { get; }
-        private bool CanCloseApplicationCommandExecute(object p) => true;
-        private void OnCloseApplicationCommandExecuted(object p)
+        public MainWindowViewModel(IPopUpMessageService popUpService) : this ()
         {
-            Application.Current.Shutdown();
+            PopUpService = popUpService;
         }
         #endregion
+
+        private readonly IPopUpMessageService PopUpService;
+
+        #region "Commands"
 
         #region "Chart Clear Command"
         public ICommand ClearChartsCommand { get; }
@@ -83,11 +81,10 @@ namespace RateShopperWPF.ViewModels
             {
                 IsBusy = true;
                 IsEnabledStarterButton = false;
-
                 List<string> parsingLinks = App.UserSettings.IsUseList ? GetParsingLinksFromSettings() : GetParsingLinkFromMainWindow();
 
                 LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1) * parsingLinks.Count());
-                var handlerParser = new ParsingHandler(StartDate, EndDate);
+                var handlerParser = new ParsingHandler(StartDate, EndDate, PopUpService);
 
                 foreach (var link in parsingLinks)
                 {
@@ -100,13 +97,13 @@ namespace RateShopperWPF.ViewModels
                     ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
                 }
                 if (LoadingStatus.Value != LoadingStatus.MaxValue)
-                    _ = Task.Run(() => MessageBox.Show("Таки где-то была ошибка в выгрузке данных, будь внимателен."));
+                    _ = Task.Run(() => PopUpService?.ShowMessage("Таки где-то была ошибка в выгрузке данных, будь бдителен."));
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Hand.Play();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                PopUpService?.ShowMessage(ex.Message, ex.Source);
             }
             finally
             {
@@ -173,8 +170,33 @@ namespace RateShopperWPF.ViewModels
         #region "Input Properties"
 
         public string ParentLink { get; set; } = "ra-nevskiy-44.ru";
-        public DateTime StartDate { private get; set; }
-        public DateTime EndDate { private get; set; }
+        private DateTime _startDate;
+        public DateTime StartDate
+        {
+            get => _startDate;
+            set
+            {
+                if (value < DateTime.Today)
+                    Set(ref _startDate, DateTime.Today);
+                else
+                    Set(ref _startDate, value);
+
+                if (EndDate <= StartDate)
+                    EndDate = value.AddDays(1);
+            }
+        }
+        private DateTime _endDate;
+        public DateTime EndDate
+        {
+            get => _endDate;
+            set
+            {
+                if (value <= StartDate)
+                    Set(ref _endDate, StartDate.AddDays(1));
+                else
+                    Set(ref _endDate, value);
+            }
+        }
         #endregion
 
         #region "UI"

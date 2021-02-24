@@ -8,13 +8,12 @@
         xmlns:vm="clr-namespace:RateShopperWPF.ViewModels"
         xmlns:System="clr-namespace:System;assembly=mscorlib" 
         x:Class="RateShopperWPF.Views.MainWindow"
-        mc:Ignorable="d"
+        mc:Ignorable="d" 
+        Foreground="{StaticResource  MaterialDesignLightForeground}"
+        Background="{StaticResource  MaterialDesignLightBackground}" 
         DataContext="{x:Static local:App.UserSettings}"
         Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="800" MinHeight="622" Width="850" Height="622">
-    <Window.Resources>
-        <vm:MainWindowViewModel x:Key="MainVMSource"/>
-    </Window.Resources>
-    <Grid DataContext="{StaticResource MainVMSource}" HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
@@ -26,11 +25,11 @@
                      Text="{Binding Mode=TwoWay, Path=ParentLink}" FontSize="16" MaxLines="1" Width="170"/>
             <TextBlock Padding="8" Text="С:"  FontSize="14" FontWeight="Bold" Width="35"/>
             <DatePicker x:Name="StartDate" SelectedDateChanged="StartDateChanged"
-                    SelectedDate="{Binding Mode=OneWayToSource, Path=StartDate}"
+                    SelectedDate="{Binding Mode=TwoWay, Path=StartDate}"
                     FontSize="16" Width="150" />
             <TextBlock Padding="8" Text="По:" FontSize="14" FontWeight="Bold" Width="40"/>
-            <DatePicker x:Name="EndDate" SelectedDateChanged="EndDateChanged"
-                    SelectedDate="{Binding Mode=OneWayToSource, Path=EndDate}"
+            <DatePicker x:Name="EndDate"
+                    SelectedDate="{Binding Mode=TwoWay, Path=EndDate}"
                     FontSize="16" Width="150" />
             <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Показать" 
                     Command="{Binding Path=GetDataOnBoardCommand}" 
@@ -44,7 +43,9 @@
                 Click="OpenSettingsClick" FontSize="10" Content="Настройки" Height="auto" Width="auto"/>
         <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" TabStripPlacement="Top" Grid.Row="1">
             <TabItem>
-                <TabItem.Header>Таблица</TabItem.Header>
+                <TabItem.Header>
+                    Таблица
+                </TabItem.Header>
                 <DataGrid x:Name="DataGridRatesOutput"
                           ItemsSource="{Binding Mode=OneWay, Path=GridSourse}"
                           AutoGenerateColumns="False"  FontSize="14" >
@@ -76,10 +77,10 @@
                             Content="Reset Zoom" Style="{StaticResource MaterialDesignToolButton}" />
                     <lvc:CartesianChart Series="{Binding Path=ChartMinRate}"  
                                         Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                                        Background="LightBlue"
+                                        Background="AliceBlue"
                                         LegendLocation="Bottom" Zoom="X">
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis x:Name="Y" Foreground="#FF575757"  Title="Минимальный доступный тариф на двоих" 
+                            <lvc:Axis x:Name="Y" Title="Минимальный доступный тариф на двоих" 
                                       MinValue="0" LabelFormatter="{Binding FormatterCost}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
@@ -91,7 +92,7 @@
                                         Background="LightGoldenrodYellow"
                                         BorderThickness="4" Zoom="X">
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis x:Name="Y2" Foreground="#FF575757" Title="Количество доступных категорий" 
+                            <lvc:Axis x:Name="Y2" Title="Количество доступных категорий" 
                                       Labels="0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
                                       MinValue="0" LabelFormatter="{Binding FormatterCounter}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
@@ -101,10 +102,10 @@
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                     <lvc:CartesianChart Series="{Binding Path=ChartRateCountPercent}"
-                                        Grid.Row="1" Background="LightSteelBlue"
+                                        Grid.Row="1" Background="LightCyan"
                                         BorderThickness="4" Zoom="X" Grid.Column="1">
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis x:Name="Y3" Foreground="#FF575757" Title="Доступные категории от максимума" 
+                            <lvc:Axis x:Name="Y3" Title="Доступные категории от максимума" 
                                       MinValue="0" MaxValue="100" LabelFormatter="{Binding FormatterPercent}" ></lvc:Axis>
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>

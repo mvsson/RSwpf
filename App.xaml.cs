@@ -14,7 +14,7 @@ namespace RateShopperWPF
     public partial class App : Application
     {
         public static readonly UserSettingsViewModel UserSettings;
-        internal static readonly FileIOService IOService;
+        internal static readonly FileIOService<UserSettingsViewModel> IOService;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -26,7 +26,7 @@ namespace RateShopperWPF
 
         static App ()
         {
-            IOService = new FileIOService($"{Environment.CurrentDirectory}\\Settings.json");
+            IOService = new FileIOService<UserSettingsViewModel>($"{Environment.CurrentDirectory}\\Settings.json");
             UserSettings = IOService.LoadSettings();
             if (UserSettings == null)
             {

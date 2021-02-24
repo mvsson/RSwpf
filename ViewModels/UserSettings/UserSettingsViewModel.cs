@@ -8,6 +8,10 @@ namespace RateShopperWPF.ViewModels.UserSettings
     {
         public UserSettingsViewModel()
         {
+            IsUseList = false;
+            IsShowChartLabels = true;
+            IsSoundOn = true;
+            IsShowGridDetailed = false;
             ListLink = new ObservableCollection<HotelLinkSetter>();
         }
 
@@ -37,7 +41,7 @@ namespace RateShopperWPF.ViewModels.UserSettings
                 IsEnabledInputLink = _isUseList == true ? false : true ;
             }
         }
-        private bool _isEnabledInputLink = true;
+        private bool _isEnabledInputLink;
         public bool IsEnabledInputLink
         {
             get => _isEnabledInputLink;
@@ -45,7 +49,7 @@ namespace RateShopperWPF.ViewModels.UserSettings
         }
 
 
-        private bool _isSoundOn = true;
+        private bool _isSoundOn;
         public bool IsSoundOn
         {
             get => _isSoundOn;

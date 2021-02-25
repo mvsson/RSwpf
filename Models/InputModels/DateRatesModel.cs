@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RateShopperWPF.Models.InputModels
+namespace RSwpf.Models.InputModels
 {
     /// <summary>
     /// Хранит в себе вывод RateLine'ов из класса Parser
@@ -35,7 +35,7 @@ namespace RateShopperWPF.Models.InputModels
         public double GetPriceIntegerOrDefault()
         {
             string nums = "0123456789";
-            string letters = "абвгдеёжзийклмнопрстуфхцчшщьыъэюя.,";
+            string letters = "р.,";
             string res = string.Empty;
             double price;
             foreach (var ch in Price)

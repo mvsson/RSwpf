@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using RateShopperWPF.Models.InputModels;
-using RateShopperWPF.ViewModels.Base;
+using RSwpf.Models.InputModels;
+using RSwpf.ViewModels.Base;
 
-namespace RateShopperWPF.ViewModels.UserSettings
+namespace RSwpf.ViewModels.UserSettings
 {
     public class UserSettingsViewModel : ViewModelBase
     {
@@ -12,11 +12,10 @@ namespace RateShopperWPF.ViewModels.UserSettings
             IsShowChartLabels = true;
             IsSoundOn = true;
             IsShowGridDetailed = false;
-            ListLink = new ObservableCollection<HotelLinkSetter>();
+            ListLink = new ObservableCollection<HotelLinkSelected>();
         }
 
-
-        #region "Global Settings"
+        #region "Settings Properties"
         private bool _isShowGridDetailed;
         public bool IsShowGridDetailed
         {
@@ -41,13 +40,13 @@ namespace RateShopperWPF.ViewModels.UserSettings
                 IsEnabledInputLink = _isUseList == true ? false : true ;
             }
         }
+
         private bool _isEnabledInputLink;
         public bool IsEnabledInputLink
         {
             get => _isEnabledInputLink;
             set => Set(ref _isEnabledInputLink, value);
         }
-
 
         private bool _isSoundOn;
         public bool IsSoundOn
@@ -56,8 +55,8 @@ namespace RateShopperWPF.ViewModels.UserSettings
             set => Set(ref _isSoundOn, value);
         }
 
-        private ObservableCollection<HotelLinkSetter> _listLink;
-        public ObservableCollection<HotelLinkSetter> ListLink
+        private ObservableCollection<HotelLinkSelected> _listLink;
+        public ObservableCollection<HotelLinkSelected> ListLink
         {
             get => _listLink;
             set => Set(ref _listLink, value);

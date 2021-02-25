@@ -3,24 +3,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
-using RateShopperWPF.Models.InputModels;
-using RateShopperWPF.Models.OutputModels;
+using RSwpf.Models.InputModels;
+using RSwpf.Models.OutputModels;
 
-namespace RateShopperWPF.Services.Core
+namespace RSwpf.Services.Core
 {
     /// <summary>
     /// Производит загрузку и обрабатывание DOM исходника страницы, получаемой из класса UrlSettings
-    /// Выводит данные в класс RateData
+    /// Выводит данные в класс DateRates
     /// </summary>
     class ParserCore
     {
         /// <summary>
-        /// Создаёт массив "PriceByDay" и заполняет его с помощью .AsParsllel. Отображает процесс на прогрессбар.
+        /// Создаёт массив "DateRates" и заполняет его с помощью .AsParsllel. Отображает процесс на прогрессбар.
         /// </summary>
         /// <param name="progressBar"></param>
         /// <param name="urls"></param>
         /// <returns></returns>
-        public async Task<DateRates[]> GetRatesListAsync(ProgressBarModel progressBar, params UrlModel[] urls)
+        public async Task<DateRates[]> GetRatesOnDatesAsync(ProgressBarModel progressBar, params UrlModel[] urls)
         {
             var pricesList = new DateRates[urls.Length];
 
@@ -28,20 +28,26 @@ namespace RateShopperWPF.Services.Core
                 urls.AsParallel().Select(async (url, index) =>
                 {
                     var domDocument = await GetDomPageAsync(url.Link);
-                    pricesList[index] = GetRatesByDay(domDocument, url);
+                    pricesList[index] = GetDateRates(domDocument, url);
                     progressBar.Value += 1;
                 }));
             return pricesList;
         }
+        public async Task<DateRates> GetRatesOnDateAsync(ProgressBarModel progressBar, UrlModel url)
+        {
+            var domDocument = await GetDomPageAsync(url.Link);
+            progressBar.Value += 1;
+            return GetDateRates(domDocument, url);
+        }
         /// <summary>
-        /// Создаёт и заполняет экземпляр "PriceByDay" данными из DOM исходника
+        /// Создаёт и заполняет экземпляр "DateRates" данными из DOM исходника
         /// </summary>
         /// <param name="document"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        private DateRates GetRatesByDay(IDocument document, UrlModel url)
+        private DateRates GetDateRates(IDocument document, UrlModel url)
         {
-            var blocks = GetParse(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
+            var blocks = GetParseElements(in document, "tr", "js-rt-block-row "); // получаем блоки с категориями номеров и ценами
             DateRates result = new DateRates(url.ParentLink, url.Date);
             if (blocks.Count() == 0)
             {
@@ -52,18 +58,18 @@ namespace RateShopperWPF.Services.Core
             {
                 var priceLine = new Rate();
                 // парсим названия категорий
-                var category = GetParse(in item, "span", "hprt-roomtype-icon-link ");
+                var category = GetParseElements(in item, "span", "hprt-roomtype-icon-link ");
                 foreach (var _item in category)
                 {
                     priceLine.Category = _item.TextContent.Trim();
                 }
                 // парсим цены
-                var price = GetParse(in item, "div", "bui-price-display__value prco-inline-block-maker-helper prco-f-font-heading ");
+                var price = GetParseElements(in item, "div", "bui-price-display__value prco-inline-block-maker-helper prco-f-font-heading ");
                 foreach (var _item in price)
                 {
                     priceLine.Price = _item.TextContent.Trim();
                 }
-                var meal = GetParse(in item, "li", "jq_tooltip  rt_clean_up_options");
+                var meal = GetParseElements(in item, "li", "jq_tooltip  rt_clean_up_options");
                 foreach (var _item in meal)
                 {
                     priceLine.Meal = _item.TextContent.Trim();
@@ -80,7 +86,7 @@ namespace RateShopperWPF.Services.Core
         /// <param name="htmlteg"></param>
         /// <param name="htmlclass">Класс в теге</param>
         /// <returns></returns>
-        private IEnumerable<IElement> GetParse<T>(in T source, string htmlteg, string htmlclass) where T : IParentNode
+        private IEnumerable<IElement> GetParseElements<T>(in T source, string htmlteg, string htmlclass) where T : IParentNode
         {
             IEnumerable<IElement> blocks = source.QuerySelectorAll(htmlteg).Where(item => item.ClassName != null && item.ClassName.Contains(htmlclass));
             return blocks;

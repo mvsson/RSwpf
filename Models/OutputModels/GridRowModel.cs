@@ -1,7 +1,7 @@
 ﻿using System;
-using RateShopperWPF.Models.InputModels;
+using RSwpf.Models.InputModels;
 
-namespace RateShopperWPF.Models.OutputModels
+namespace RSwpf.Models.OutputModels
 {
     public struct GridRowModel
     {

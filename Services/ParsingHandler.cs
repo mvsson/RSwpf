@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Media;
 using System.Threading.Tasks;
-using RateShopperWPF.Models.OutputModels;
-using RateShopperWPF.Services.Core;
-using RateShopperWPF.Services.OutputLogic;
-using RateShopperWPF.Services.PopUpMessageService;
+using RSwpf.Models.OutputModels;
+using RSwpf.Services.Core;
+using RSwpf.Services.OutputLogic;
+using RSwpf.Services.PopUpMessageService;
 
-namespace RateShopperWPF.Services
+namespace RSwpf.Services
 {
+    /// <summary>
+    /// Инкапсулирует в себе весь алгоритм парсинга. Содержит свойства GridRows и Charts для вывода информации в таблицу и графики.
+    /// </summary>
     class ParsingHandler
     {
         #region InputProp
@@ -32,7 +35,7 @@ namespace RateShopperWPF.Services
         public ChartsModel Charts { get; private set; }
 
         /// <summary> Обрабатывает всплывающие уведомления. Первый параметр - текст, второй - заголовок</summary>
-        private readonly Action<string, string> PopUpMessageHandler;
+        private readonly Action<object, PopUpMessageArgs> PopUpMessageHandler;
         #endregion
 
         #region Ctors
@@ -41,15 +44,15 @@ namespace RateShopperWPF.Services
             StartDate = startDate;
             EndDate = endDate;
         }
-        public ParsingHandler(DateTime startDate, DateTime endDate, Action<string, string> popUpMessageHandler) : this(startDate, endDate)
+        public ParsingHandler(DateTime startDate, DateTime endDate, Action<object, PopUpMessageArgs> popUpMessageHandler) : this(startDate, endDate)
         {
             PopUpMessageHandler += popUpMessageHandler;
         }
         #endregion
 
-        public async Task ProcessAsync(ProgressBarModel progressBar)
+        public async Task GoParseAsync(ProgressBarModel progressBar)
         {
-            DateTime[][] parsingDates = (new DatesCreator(StartDate, EndDate)).GetSplitDateList();
+            DateTime[][] parsingDates = (new DatesCreator(StartDate, EndDate)).GetSplitDates();
             var parser = new ParsingService(ParentLink, PopUpMessageHandler);
 
             double maxCountCategory = await parser.GetMaxCountCategoriesAsync(progressBar);
@@ -61,7 +64,7 @@ namespace RateShopperWPF.Services
             {
                 try
                 {
-                    var data = await parser.GetRatesDataAsync(progressBar, dates);
+                    var data = await parser.GetRatesOnDatesAsync(progressBar, dates);
                     GridRows.AddRange(gridLoader.GetRows(data));
                     foreach(var dayData in data)
                     {
@@ -74,7 +77,7 @@ namespace RateShopperWPF.Services
                 {
                     if (App.UserSettings.IsSoundOn)
                         SystemSounds.Exclamation.Play();
-                    _ = Task.Run(() => PopUpMessageHandler?.Invoke(ex.Message, ex.Source));
+                    _ = Task.Run(() => PopUpMessageHandler?.Invoke(this, new PopUpMessageArgs(ex.Message, ex.Source)));
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RateShopperWPF.Models.InputModels
+namespace RSwpf.Models.InputModels
 {
     class UrlModel
     {

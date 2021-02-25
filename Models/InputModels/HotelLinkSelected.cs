@@ -1,6 +1,6 @@
-﻿namespace RateShopperWPF.Models.InputModels
+﻿namespace RSwpf.Models.InputModels
 {
-    public class HotelLinkSetter  //модель
+    public class HotelLinkSelected  //модель
     {
         public bool IsSelected { get; set; } = true;
         public string HotelLink { get; set; }

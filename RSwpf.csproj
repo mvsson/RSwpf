@@ -65,6 +65,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.14.0.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.14.0\lib\net472\AngleSharp.dll</HintPath>
@@ -126,9 +129,9 @@
     <Compile Include="Infrastructure\TaskUtilities\TaskUtilities.cs" />
     <Compile Include="Models\OutputModels\ProgressBarModel.cs" />
     <Compile Include="Services\Core\DatesCreator.cs" />
-    <Compile Include="Services\Core\UrlsCreator.cs" />
+    <Compile Include="Services\Core\UrlCreator.cs" />
     <Compile Include="Services\FileIOService\FileIOService.cs" />
-    <Compile Include="Services\PopUpMessageService\MessageService.cs" />
+    <Compile Include="Services\PopUpMessageService\PopUpMessageService.cs" />
     <Compile Include="Services\ParsingHandler.cs" />
     <Compile Include="Services\OutputLogic\ChartLoader.cs" />
     <Compile Include="Services\Core\ParsingService.cs" />
@@ -138,7 +141,7 @@
     <Compile Include="Services\Core\ParserCore.cs" />
     <Compile Include="Models\InputModels\DateRatesModel.cs" />
     <Compile Include="Models\InputModels\UrlModel.cs" />
-    <Compile Include="Models\InputModels\HotelLinkSetter.cs" />
+    <Compile Include="Models\InputModels\HotelLinkSelected.cs" />
     <Compile Include="ViewModels\UserSettings\UserSettingsViewModel.cs" />
     <Compile Include="ViewModels\Base\ViewModelBase.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

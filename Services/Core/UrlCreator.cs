@@ -1,14 +1,14 @@
 ﻿using System;
-using RateShopperWPF.Models.InputModels;
+using RSwpf.Models.InputModels;
 
-namespace RateShopperWPF.Services.Core
+namespace RSwpf.Services.Core
 {
-    class UrlsCreator
+    class UrlCreator
     {
         private readonly string ParentLink;
         const string BaseUrl = "https://www.booking.com/hotel/ru/";
 
-        public UrlsCreator(string hotelLink)
+        public UrlCreator(string hotelLink)
         {
             ParentLink = hotelLink;
         }

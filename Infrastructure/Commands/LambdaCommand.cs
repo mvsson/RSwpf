@@ -1,7 +1,7 @@
 ﻿using System;
-using RateShopperWPF.Infrastructure.Commands.Base;
+using RSwpf.Infrastructure.Commands.Base;
 
-namespace RateShopperWPF.Infrastructure.Commands
+namespace RSwpf.Infrastructure.Commands
 {
     internal class LambdaCommand: Command
     {

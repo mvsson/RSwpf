@@ -2,7 +2,7 @@
 using LiveCharts;
 using LiveCharts.Wpf;
 
-namespace RateShopperWPF.Models.OutputModels
+namespace RSwpf.Models.OutputModels
 {
     class ChartsModel
     {
@@ -10,25 +10,25 @@ namespace RateShopperWPF.Models.OutputModels
         public readonly LineSeries ChartRatesCounter;
         public readonly LineSeries ChartRatesCounterPercent;
 
-        public ChartsModel(string parentLink, bool showLabels)
+        public ChartsModel(string parentLink, bool isShowLabels)
         {
             ChartMinRate = new LineSeries() 
             { 
                 Title = parentLink, 
                 Values = new ChartValues<PointModel>(),
-                DataLabels = showLabels
+                DataLabels = isShowLabels
             };
             ChartRatesCounter = new LineSeries()
             {
                 Title = parentLink,
                 Values = new ChartValues<PointModel>(),
-                DataLabels = showLabels
+                DataLabels = isShowLabels
             };
             ChartRatesCounterPercent = new LineSeries()
             {
                 Title = parentLink,
                 Values = new ChartValues<PointModel>(),
-                DataLabels = showLabels
+                DataLabels = isShowLabels
             };
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace RateShopperWPF.Models.OutputModels
+namespace RSwpf.Models.OutputModels
 {
     class ProgressBarModel : INotifyPropertyChanged
     {

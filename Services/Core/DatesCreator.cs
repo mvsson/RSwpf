@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RateShopperWPF.Services.Core
+namespace RSwpf.Services.Core
 {
     class DatesCreator
     {
@@ -14,26 +14,26 @@ namespace RateShopperWPF.Services.Core
             EndRange = endRange;
         }
 
-        public DateTime[][] GetSplitDateList(int lenght = 16)
+        public DateTime[][] GetSplitDates(int lenght = 16)
         {
-            var dateList = GetCheckinList();
+            var dates = GetCheckinDates();
             int i = 0;
-            var items = from s in dateList
+            var items = from s in dates
                         let num = i++
                         group s by num / lenght into g
                         select g.ToArray();
             return items.ToArray();
         }
 
-        private DateTime[] GetCheckinList()
+        private DateTime[] GetCheckinDates()
         {
-            var dateList = new List<DateTime>();
+            var dates = new List<DateTime>();
             while(StartRange < EndRange)
             {
-                dateList.Add(StartRange);
+                dates.Add(StartRange);
                 StartRange = StartRange.AddDays(1);
             }
-            return dateList.ToArray();
+            return dates.ToArray();
         }
     }
 }

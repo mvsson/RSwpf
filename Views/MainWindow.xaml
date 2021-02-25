@@ -4,14 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        xmlns:local="clr-namespace:RateShopperWPF"
-        xmlns:vm="clr-namespace:RateShopperWPF.ViewModels"
+        xmlns:local="clr-namespace:RSwpf"
+        xmlns:vm="clr-namespace:RSwpf.ViewModels"
         xmlns:System="clr-namespace:System;assembly=mscorlib" 
-        x:Class="RateShopperWPF.Views.MainWindow"
+        x:Class="RSwpf.Views.MainWindow"
         mc:Ignorable="d" 
         Foreground="{StaticResource  MaterialDesignLightForeground}"
-        Background="{StaticResource  MaterialDesignLightBackground}" 
-        DataContext="{x:Static local:App.UserSettings}"
+        Background="{StaticResource  MaterialDesignLightBackground}"
         Title="RateShopper" WindowStyle="ThreeDBorderWindow" MinWidth="800" MinHeight="622" Width="850" Height="622">
     <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>

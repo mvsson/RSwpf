@@ -5,15 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LiveCharts;
-using RateShopperWPF.Infrastructure.Commands;
-using RateShopperWPF.Models.OutputModels;
-using RateShopperWPF.ViewModels.Base;
+using RSwpf.Infrastructure.Commands;
+using RSwpf.Models.OutputModels;
+using RSwpf.ViewModels.Base;
 using LiveCharts.Configurations;
 using System.Collections.Generic;
-using RateShopperWPF.Services;
-using RateShopperWPF.Services.PopUpMessageService;
+using RSwpf.Services;
+using RSwpf.Services.PopUpMessageService;
 
-namespace RateShopperWPF.ViewModels
+namespace RSwpf.ViewModels
 {
     internal class MainWindowViewModel : ViewModelBase
     {
@@ -39,7 +39,7 @@ namespace RateShopperWPF.ViewModels
             EndDate = DateTime.Today.AddDays(14);
             #endregion
         }
-        public MainWindowViewModel(Action<string, string> popUpMessageHandler) : this ()
+        public MainWindowViewModel(Action<object, PopUpMessageArgs> popUpMessageHandler) : this ()
         {
             PopUpMessageHandler = popUpMessageHandler;
         }
@@ -87,7 +87,7 @@ namespace RateShopperWPF.ViewModels
                 foreach (var link in parsingLinks)
                 {
                     handlerParser.ParentLink = link;
-                    await handlerParser.ProcessAsync(DownloadPB);
+                    await handlerParser.GoParseAsync(DownloadPB);
 
                     handlerParser.GridRows.ForEach(row => GridSourse.Add(row));
                     ChartMinRate.Add(handlerParser.Charts.ChartMinRate);
@@ -95,13 +95,13 @@ namespace RateShopperWPF.ViewModels
                     ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
                 }
                 if (DownloadPB.Value != DownloadPB.MaxValue)
-                    _ = Task.Run(() => PopUpMessageHandler?.Invoke("Таки где-то была ошибка в выгрузке данных, будь бдителен.", "Download Error"));
+                    _ = Task.Run(() => PopUpMessageHandler?.Invoke(this, new PopUpMessageArgs("Таки где-то была ошибка в выгрузке данных, будь бдителен.", "Download Error")));
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Hand.Play();
             }
             catch (Exception ex)
             {
-                PopUpMessageHandler?.Invoke(ex.Message, ex.Source);
+                PopUpMessageHandler?.Invoke(this, new PopUpMessageArgs(ex.Message, ex.Source));
             }
             finally
             {
@@ -174,7 +174,7 @@ namespace RateShopperWPF.ViewModels
             get => _startDate;
             set
             {
-                if (value < DateTime.Today)
+                if (value < DateTime.Today || value == null)
                     Set(ref _startDate, DateTime.Today);
                 else
                     Set(ref _startDate, value);
@@ -189,7 +189,7 @@ namespace RateShopperWPF.ViewModels
             get => _endDate;
             set
             {
-                if (value <= StartDate)
+                if (value <= StartDate || value ==null)
                     Set(ref _endDate, StartDate.AddDays(1));
                 else
                     Set(ref _endDate, value);
@@ -200,7 +200,7 @@ namespace RateShopperWPF.ViewModels
         #region "UI"
 
         /// <summary> Обрабатывает всплывающие уведомления. Первый параметр - текст, второй - заголовок</summary>
-        private readonly Action<string, string> PopUpMessageHandler;
+        private readonly Action<object, PopUpMessageArgs> PopUpMessageHandler;
 
         private bool _isEnabledStarterButton = true;
         public bool IsEnabledStarterButton

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using RateShopperWPF.Infrastructure.TaskUtilities;
+using RSwpf.Infrastructure.TaskUtilities;
 
-namespace RateShopperWPF.Infrastructure.Commands
+namespace RSwpf.Infrastructure.Commands
 {
     #region IAsyncCommand
     interface IAsyncCommand : ICommand

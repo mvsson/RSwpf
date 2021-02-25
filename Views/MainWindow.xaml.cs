@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RateShopperWPF.Views
+namespace RSwpf.Views
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -16,6 +16,10 @@ namespace RateShopperWPF.Views
         }
         private void StartDateChanged(object sender, RoutedEventArgs e)
         {
+            if (StartDate.SelectedDate == null)
+                StartDate.SelectedDate = DateTime.Today;
+            if (EndDate.SelectedDate == null)
+                EndDate.SelectedDate = DateTime.Today.AddDays(1);
             var blackoutRange = new CalendarDateRange(DateTime.MinValue, StartDate.SelectedDate.Value);
             EndDate.BlackoutDates.Clear();
             EndDate.BlackoutDates.Add(blackoutRange);

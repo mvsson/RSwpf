@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-namespace RateShopperWPF.Services.FileIOService
+namespace RSwpf.Services.FileIOService
 {
     internal class FileIOService<T> where T: new()
     {

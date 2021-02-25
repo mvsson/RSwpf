@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
-using RateShopperWPF.Services.FileIOService;
-using RateShopperWPF.Services.PopUpMessageService;
-using RateShopperWPF.ViewModels;
-using RateShopperWPF.ViewModels.UserSettings;
-using RateShopperWPF.Views;
+using RSwpf.Services.FileIOService;
+using RSwpf.Services.PopUpMessageService;
+using RSwpf.ViewModels;
+using RSwpf.ViewModels.UserSettings;
+using RSwpf.Views;
 
-namespace RateShopperWPF
+namespace RSwpf
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

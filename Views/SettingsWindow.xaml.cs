@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace RateShopperWPF.Views
+namespace RSwpf.Views
 {
     /// <summary>
     /// Логика взаимодействия для SettingsWindow.xaml

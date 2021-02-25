@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace RateShopperWPF.ViewModels.Base
+namespace RSwpf.ViewModels.Base
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

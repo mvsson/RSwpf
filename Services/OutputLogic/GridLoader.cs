@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using RateShopperWPF.Models.InputModels;
-using RateShopperWPF.Models.OutputModels;
+using RSwpf.Models.InputModels;
+using RSwpf.Models.OutputModels;
 
-namespace RateShopperWPF.Services.OutputLogic
+namespace RSwpf.Services.OutputLogic
 {
     class GridLoader
     {

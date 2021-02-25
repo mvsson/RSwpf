@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace RateShopperWPF.Infrastructure.TaskUtilities
+namespace RSwpf.Infrastructure.TaskUtilities
 {
     public interface IErrorHandler
     {

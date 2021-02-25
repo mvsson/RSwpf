@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace RateShopperWPF.Infrastructure.Commands.Base
+namespace RSwpf.Infrastructure.Commands.Base
 {
     internal abstract class Command : ICommand
     {

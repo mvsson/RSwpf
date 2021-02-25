@@ -39,13 +39,11 @@ namespace RateShopperWPF.ViewModels
             EndDate = DateTime.Today.AddDays(14);
             #endregion
         }
-        public MainWindowViewModel(IPopUpMessageSender popUpService) : this ()
+        public MainWindowViewModel(Action<string, string> popUpMessageHandler) : this ()
         {
-            PopUpSender = popUpService;
+            PopUpMessageHandler = popUpMessageHandler;
         }
         #endregion
-
-        private readonly IPopUpMessageSender PopUpSender;
 
         #region "Commands"
 
@@ -83,31 +81,31 @@ namespace RateShopperWPF.ViewModels
                 IsEnabledStarterButton = false;
                 List<string> parsingLinks = App.UserSettings.IsUseList ? GetParsingLinksFromSettings() : GetParsingLinkFromMainWindow();
 
-                LoadingStatus = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1) * parsingLinks.Count());
-                var handlerParser = new ParsingHandler(StartDate, EndDate, PopUpSender);
+                DownloadPB = new ProgressBarModel((int)((EndDate - StartDate).TotalDays + 1) * parsingLinks.Count());
+                var handlerParser = new ParsingHandler(StartDate, EndDate, PopUpMessageHandler);
 
                 foreach (var link in parsingLinks)
                 {
                     handlerParser.ParentLink = link;
-                    await handlerParser.ProcessAsync(LoadingStatus);
+                    await handlerParser.ProcessAsync(DownloadPB);
 
                     handlerParser.GridRows.ForEach(row => GridSourse.Add(row));
                     ChartMinRate.Add(handlerParser.Charts.ChartMinRate);
                     ChartRatesCounter.Add(handlerParser.Charts.ChartRatesCounter);
                     ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
                 }
-                if (LoadingStatus.Value != LoadingStatus.MaxValue)
-                    _ = Task.Run(() => PopUpSender?.ShowMessage("Таки где-то была ошибка в выгрузке данных, будь бдителен."));
+                if (DownloadPB.Value != DownloadPB.MaxValue)
+                    _ = Task.Run(() => PopUpMessageHandler?.Invoke("Таки где-то была ошибка в выгрузке данных, будь бдителен.", "Download Error"));
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Hand.Play();
             }
             catch (Exception ex)
             {
-                PopUpSender?.ShowMessage(ex.Message, ex.Source);
+                PopUpMessageHandler?.Invoke(ex.Message, ex.Source);
             }
             finally
             {
-                LoadingStatus.Value = 0;
+                DownloadPB.Value = 0;
                 IsEnabledStarterButton = true;
                 IsBusy = false;
             }
@@ -201,6 +199,9 @@ namespace RateShopperWPF.ViewModels
 
         #region "UI"
 
+        /// <summary> Обрабатывает всплывающие уведомления. Первый параметр - текст, второй - заголовок</summary>
+        private readonly Action<string, string> PopUpMessageHandler;
+
         private bool _isEnabledStarterButton = true;
         public bool IsEnabledStarterButton
         {
@@ -208,11 +209,11 @@ namespace RateShopperWPF.ViewModels
             set => Set(ref _isEnabledStarterButton, value);
         }
 
-        private ProgressBarModel _loadingStatus;
-        public ProgressBarModel LoadingStatus
+        private ProgressBarModel _downloadPB;
+        public ProgressBarModel DownloadPB
         {
-            get => _loadingStatus;
-            set => Set(ref _loadingStatus, value);
+            get => _downloadPB;
+            set => Set(ref _downloadPB, value);
         }
         #endregion
     }

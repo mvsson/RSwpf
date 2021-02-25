@@ -117,7 +117,7 @@
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Stretch"
-                     Value="{Binding Mode=OneWay, Path= LoadingStatus.Value}"
-                     Maximum="{Binding Mode=OneWay, Path=LoadingStatus.MaxValue}" Height="6" Grid.Row="1" VerticalAlignment="Bottom"/>
+                     Value="{Binding Mode=OneWay, Path= DownloadPB.Value}"
+                     Maximum="{Binding Mode=OneWay, Path=DownloadPB.MaxValue}" Height="6" Grid.Row="1" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

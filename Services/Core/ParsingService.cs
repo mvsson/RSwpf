@@ -4,7 +4,6 @@ using System.Media;
 using System.Threading.Tasks;
 using RateShopperWPF.Models.InputModels;
 using RateShopperWPF.Models.OutputModels;
-using RateShopperWPF.Services.PopUpMessageService;
 
 namespace RateShopperWPF.Services.Core
 {
@@ -12,19 +11,24 @@ namespace RateShopperWPF.Services.Core
     {   
         private readonly UrlsCreator UrlCreator;
         private readonly ParserCore Parser;
-        #region Services
-        private readonly IPopUpMessageSender PopUpSender;
-        #endregion
+        /// <summary> Обрабатывает всплывающие уведомления. Первый параметр - текст, второй - заголовок</summary>
+        private readonly Action<string, string> PopUpMessageHandler;
 
-        public ParsingService(string inputLink, IPopUpMessageSender popUpSender = null)
+        #region Ctors
+        public ParsingService(string inputLink)
         {
             UrlCreator = new UrlsCreator(inputLink);
             Parser = new ParserCore();
-            PopUpSender = popUpSender;
         }
-    
+        public ParsingService(string inputLink, Action<string, string> popUpMessageHandler) : this (inputLink)
+        {
+            PopUpMessageHandler += popUpMessageHandler;
+        }
+        #endregion 
+
         public async Task<double> GetMaxCountCategoriesAsync(ProgressBarModel loadingStatus)
         {
+            PopUpMessageHandler?.Invoke("text ", "title");
             var urlPast6Month = UrlCreator.GetUrl(DateTime.Today.AddDays(180));
             var ratesPast6Month = await Parser.GetRatesListAsync(loadingStatus, urlPast6Month);
             double maxRatesCount = ratesPast6Month.First().Rates.Where(rate => rate.Category != null).Count();
@@ -32,8 +36,8 @@ namespace RateShopperWPF.Services.Core
             {
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Exclamation.Play();
-                _ = Task.Run(() => PopUpSender?.ShowMessage("Максимальное количество категорий не определено.\n" +
-                                                           "Процентное соотношение не будет отображено."));
+                _ = Task.Run(() => PopUpMessageHandler?.Invoke("Максимальное количество категорий не определено.\n" +
+                                                           "Процентное соотношение не будет отображено.", "Error"));
             }
             return maxRatesCount;
         }

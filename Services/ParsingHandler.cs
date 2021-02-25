@@ -30,23 +30,27 @@ namespace RateShopperWPF.Services
         #region OutputProp
         public List<GridRowModel> GridRows { get; private set; }
         public ChartsModel Charts { get; private set; }
+
+        /// <summary> Обрабатывает всплывающие уведомления. Первый параметр - текст, второй - заголовок</summary>
+        private readonly Action<string, string> PopUpMessageHandler;
         #endregion
 
-        #region Services
-        private readonly IPopUpMessageSender PopUpSender;
-        #endregion
-
-        public ParsingHandler(DateTime startDate, DateTime endDate, IPopUpMessageSender popUpSender = null)
+        #region Ctors
+        public ParsingHandler(DateTime startDate, DateTime endDate)
         {
             StartDate = startDate;
             EndDate = endDate;
-            PopUpSender = popUpSender;
         }
+        public ParsingHandler(DateTime startDate, DateTime endDate, Action<string, string> popUpMessageHandler) : this(startDate, endDate)
+        {
+            PopUpMessageHandler += popUpMessageHandler;
+        }
+        #endregion
 
         public async Task ProcessAsync(ProgressBarModel progressBar)
         {
             DateTime[][] parsingDates = (new DatesCreator(StartDate, EndDate)).GetSplitDateList();
-            var parser = new ParsingService(ParentLink, PopUpSender);
+            var parser = new ParsingService(ParentLink, PopUpMessageHandler);
 
             double maxCountCategory = await parser.GetMaxCountCategoriesAsync(progressBar);
 
@@ -70,7 +74,7 @@ namespace RateShopperWPF.Services
                 {
                     if (App.UserSettings.IsSoundOn)
                         SystemSounds.Exclamation.Play();
-                    _ = Task.Run(() => PopUpSender?.ShowMessage(ex.Message, ex.Source));
+                    _ = Task.Run(() => PopUpMessageHandler?.Invoke(ex.Message, ex.Source));
                 }
             }
         }

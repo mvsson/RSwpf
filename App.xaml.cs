@@ -20,7 +20,7 @@ namespace RateShopperWPF
             base.OnStartup(e);
             new MainWindow() 
             { 
-                DataContext = new MainWindowViewModel (new PopUpMessageBoxSender()) 
+                DataContext = new MainWindowViewModel (new PopUpMessageBoxSender().ShowMessage) 
             }.Show();
         }
 

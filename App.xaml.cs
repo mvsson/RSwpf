@@ -3,7 +3,6 @@ using System.Windows;
 using RSwpf.Services.FileIOService;
 using RSwpf.Services.PopUpMessageService;
 using RSwpf.ViewModels;
-using RSwpf.ViewModels.UserSettings;
 using RSwpf.Views;
 
 namespace RSwpf

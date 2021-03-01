@@ -2,7 +2,7 @@
 using RSwpf.Models.InputModels;
 using RSwpf.ViewModels.Base;
 
-namespace RSwpf.ViewModels.UserSettings
+namespace RSwpf.ViewModels
 {
     public class UserSettingsViewModel : ViewModelBase
     {
@@ -37,7 +37,7 @@ namespace RSwpf.ViewModels.UserSettings
             set
             {
                 Set(ref _isUseList, value);
-                IsEnabledInputLink = _isUseList == true ? false : true ;
+                IsEnabledInputLink = !value;
             }
         }
 

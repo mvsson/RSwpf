@@ -3,7 +3,7 @@ using System.Linq;
 using RSwpf.Models.InputModels;
 using RSwpf.Models.OutputModels;
 
-namespace RSwpf.Services.OutputLogic
+namespace RSwpf.ViewModels.VMOperations
 {
     class GridLoader
     {

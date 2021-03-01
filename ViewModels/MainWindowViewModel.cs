@@ -10,8 +10,8 @@ using RSwpf.Models.OutputModels;
 using RSwpf.ViewModels.Base;
 using LiveCharts.Configurations;
 using System.Collections.Generic;
-using RSwpf.Services;
 using RSwpf.Services.PopUpMessageService;
+using RSwpf.ViewModels.VMOperations;
 
 namespace RSwpf.ViewModels
 {
@@ -95,7 +95,8 @@ namespace RSwpf.ViewModels
                     ChartRateCountPercent.Add(handlerParser.Charts.ChartRatesCounterPercent);
                 }
                 if (DownloadPB.Value != DownloadPB.MaxValue)
-                    _ = Task.Run(() => PopUpMessageHandler?.Invoke(this, new PopUpMessageArgs("Таки где-то была ошибка в выгрузке данных, будь бдителен.", "Download Error")));
+                    _ = Task.Run(() => PopUpMessageHandler?
+                                       .Invoke(this, new PopUpMessageArgs("Таки где-то была ошибка в выгрузке данных, будь бдителен.", "Download Error")));
                 if (App.UserSettings.IsSoundOn)
                     SystemSounds.Hand.Play();
             }
@@ -124,7 +125,6 @@ namespace RSwpf.ViewModels
         #endregion "Get Data On Board Command"
 
         #endregion "Commands"
-
 
         #region "Charts Properties"
         private SeriesCollection _minRate;

@@ -4,10 +4,9 @@ using System.Media;
 using System.Threading.Tasks;
 using RSwpf.Models.OutputModels;
 using RSwpf.Services.Core;
-using RSwpf.Services.OutputLogic;
 using RSwpf.Services.PopUpMessageService;
 
-namespace RSwpf.Services
+namespace RSwpf.ViewModels.VMOperations
 {
     /// <summary>
     /// Инкапсулирует в себе весь алгоритм парсинга. Содержит свойства GridRows и Charts для вывода информации в таблицу и графики.
